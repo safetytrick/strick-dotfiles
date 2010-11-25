@@ -14,6 +14,7 @@ snoremap  gggHG
 onoremap  gggHG
 nnoremap  gggHG
 vnoremap  "+y
+vnoremap 	 >
 noremap  
 vnoremap  :update
 nnoremap  :update
@@ -26,11 +27,12 @@ noremap  u
 map :bt :browse tabnew
 map :tbn :tabnew
 map :nt :NERDTree
-cnoremap   :simalt ~
-inoremap   :simalt ~
+vnoremap < <gv
+vnoremap > >gv
 map Q gq
 nmap gx <Plug>NetrwBrowseX
 nnoremap <silent> <Plug>NetrwBrowseX :call netrw#NetrwBrowseX(expand("<cWORD>"),0)
+vnoremap <S-Tab> <
 onoremap <C-F4> c
 nnoremap <C-F4> c
 vnoremap <C-F4> c
@@ -51,21 +53,19 @@ inoremap  u
 cmap  +
 inoremap  
 inoremap  u
-noremap   :simalt ~
 let &cpo=s:cpo_save
 unlet s:cpo_save
 set autoindent
 set background=dark
 set backspace=indent,eol,start
 set backup
-set diffexpr=MyDiff()
 set fileencodings=ucs-bom,utf-8,default,latin1
 set helplang=en
 set history=100
 set hlsearch
 set incsearch
 set keymodel=startsel,stopsel
-set listchars=tab:¬\ ,trail:-,
+set listchars=eol:\ ,tab:>-,trail:.,extends:>,nbsp:_
 set mouse=a
 set mousemodel=popup
 set omnifunc=syntaxcomplete#Complete
@@ -80,6 +80,7 @@ set showcmd
 set showmatch
 set smartcase
 set smartindent
+set statusline=%f\ %2*%m\ %1*%h%r%=[%{&encoding}\ %{&fileformat}\ %{strlen(&ft)?&ft:'none'}\ %{getfperm(@%)}]\ 0x%B\ %12.(%c:%l/%L%)
 set suffixes=.bak,~,.swp,.o,.info,.aux,.log,.dvi,.bbl,.blg,.brf,.cb,.ind,.idx,.ilg,.inx,.out,.toc
 set tabstop=4
 set visualbell
@@ -88,14 +89,14 @@ set wildmode=longest,list
 let s:so_save = &so | let s:siso_save = &siso | set so=0 siso=0
 let v:this_session=expand("<sfile>:p")
 silent only
-cd ~/strick
+cd /usr/local/glassfish/bin
 if expand('%') == '' && !&modified && line('$') <= 1 && getline(1) == ''
   let s:wipebuf = bufnr('%')
 endif
 set shortmess=aoO
-badd +0 ~/.bashrc
-silent! argdel *
-edit ~/.bashrc
+badd +0 ~/.history
+args ~/.history
+edit ~/.history
 set splitbelow splitright
 set nosplitbelow
 set nosplitright
@@ -112,7 +113,6 @@ unlet s:cpo_save
 setlocal keymap=
 setlocal noarabic
 setlocal autoindent
-setlocal balloonexpr=
 setlocal nobinary
 setlocal bufhidden=
 setlocal buflisted
@@ -122,7 +122,7 @@ setlocal cinkeys=0{,0},0),:,0#,!^F,o,O,e
 setlocal cinoptions=
 setlocal cinwords=if,else,while,do,for,switch
 setlocal comments=s1:/*,mb:*,ex:*/,://,b:#,:%,:XCOMM,n:>,fb:-
-setlocal commentstring=#%s
+setlocal commentstring=/*%s*/
 setlocal complete=.,w,b,u,t,i
 setlocal completefunc=
 setlocal nocopyindent
@@ -134,8 +134,8 @@ setlocal nodiff
 setlocal equalprg=
 setlocal errorformat=
 setlocal noexpandtab
-if &filetype != 'sh'
-setlocal filetype=sh
+if &filetype != ''
+setlocal filetype=
 endif
 setlocal foldcolumn=0
 setlocal foldenable
@@ -151,19 +151,20 @@ setlocal formatexpr=
 setlocal formatoptions=tcq
 setlocal formatlistpat=^\\s*\\d\\+[\\]:.)}\\t\ ]\\s*
 setlocal grepprg=
-setlocal iminsert=2
-setlocal imsearch=2
+setlocal iminsert=0
+setlocal imsearch=0
 setlocal include=
 setlocal includeexpr=
-setlocal indentexpr=GetShIndent()
-setlocal indentkeys=0{,0},!^F,o,O,e,0=then,0=do,0=else,0=elif,0=fi,0=esac,0=done,),0=;;,0=;&,0=fin,0=fil,0=fip,0=fir,0=fix
+setlocal indentexpr=
+setlocal indentkeys=0{,0},:,0#,!^F,o,O,e
 setlocal noinfercase
 setlocal iskeyword=@,48-57,_,192-255
 setlocal keywordprg=
 set linebreak
 setlocal linebreak
 setlocal nolisp
-setlocal nolist
+set list
+setlocal list
 setlocal makeprg=
 setlocal matchpairs=(:),{:},[:]
 setlocal modeline
@@ -183,7 +184,7 @@ setlocal rightleftcmd=search
 setlocal noscrollbind
 setlocal shiftwidth=4
 setlocal noshortname
-setlocal nosmartindent
+setlocal smartindent
 setlocal softtabstop=0
 setlocal nospell
 setlocal spellcapcheck=[.?!]\\_[\\])'\"\	\ ]\\+
@@ -193,8 +194,8 @@ setlocal statusline=
 setlocal suffixesadd=
 setlocal swapfile
 setlocal synmaxcol=3000
-if &syntax != 'sh'
-setlocal syntax=sh
+if &syntax != ''
+setlocal syntax=
 endif
 setlocal tabstop=4
 setlocal tags=
@@ -205,12 +206,12 @@ setlocal nowinfixwidth
 setlocal wrap
 setlocal wrapmargin=0
 silent! normal! zE
-let s:l = 116 - ((17 * winheight(0) + 15) / 30)
+let s:l = 1 - ((0 * winheight(0) + 24) / 48)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-116
-normal! 016l
+1
+normal! 0
 tabnext 1
 if exists('s:wipebuf')
   silent exe 'bwipe ' . s:wipebuf

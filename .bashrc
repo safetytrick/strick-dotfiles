@@ -2,8 +2,11 @@
 # see /usr/share/doc/bash/examples/startup-files (in the package bash-doc)
 # for examples
 
-PATH=$PATH:~/scripts/:~/bin/
+
+PATH=$PATH:~/scripts/:~/bin/:~/opt/idea-IU-95.627/bin/
 HISTSIZE=1500
+export PATH
+
 
 # If not running interactively, don't do anything
 [ -z "$PS1" ] && return
@@ -95,14 +98,8 @@ if [ -f /etc/bash_completion ]; then
     . /etc/bash_completion
 fi
 
-# go specific
-export GOROOT=$HOME/go
-export GOOS="linux"
-export GOARCH="amd64"
-
-
 # python specific
-. /home/michael/.django_bash_completion
+#. /home/michael/.django_bash_completion
 export PYTHONSTARTUP=~/.pythonrc
 
 
@@ -112,8 +109,7 @@ alias ~='cd ~'
 alias ...='cd ../..'
 alias h='history | grep $1'
 alias v=vim
-alias asadmin='/usr/local/glassfish/glassfish/bin/asadmin $1'
-alias na=nautilus
+alias open=nautilus
 
 
 # http://chris-lamb.co.uk/2010/04/22/locating-source-any-python-module/
@@ -124,5 +120,11 @@ cdp () {
   )"
 }
 
+mysql_genlog_on () {
+	mysql $@ -e "set global general_log = 1;"
+}
 
+mysql_genlog_off () {
+	mysql $@ -e "set global general_log = 0;"
+}
 

@@ -21,20 +21,7 @@ set showmatch
 set ruler
 set tabstop=4
 set shiftwidth=4
-" Stolen from http://github.com/ciaranm/dotfiles-ciaranm/tree/master
-if (&termencoding == "utf-8") || has("gui_running")
-    if v:version >= 700
-        set list listchars=eol:\ ,tab:»-,trail:·,precedes:…,extends:…,nbsp:‗
-    else
-        set list listchars=eol:\ ,tab:»·,trail:·,extends:…
-    endif
-else
-    if v:version >= 700
-        set list listchars=eol:\ ,tab:>-,trail:.,extends:>,nbsp:_
-    else
-        set list listchars=eol:\ ,tab:>-,trail:.,extends:>
-    endif
-endif
+
 
 " Inspired by http://github.com/ciaranm/dotfiles-ciaranm/tree/master
 set statusline=%f\ %2*%m\ %1*%h%r%=[%{&encoding}\ %{&fileformat}\ %{strlen(&ft)?&ft:'none'}\ %{getfperm(@%)}]\ 0x%B\ %12.(%c:%l/%L%)
@@ -66,9 +53,9 @@ EOF
 exec l:pymod_path
 endfunction
 "************************ Mappings ************************
-map:nt :NERDTree
-map:tbn :tabnew
-map:bt :browse tabnew
+map nt :NERDTree
+map tbn :tabnew
+map bt :browse tabnew
 
 command -nargs=* Ntp call Ntpy(<f-args>)
 
@@ -85,40 +72,6 @@ let g:use_zen_complete_tag = 1
 " remove Lock = Caps_Lock
 " keysym Caps_Lock = Escape
 "********************** Vim Sessions **********************
-au VimLeave * call VimLeave()
-au VimEnter * call VimEnter()
-let g:PathToSessions = $HOME . "/.vim/"
-
-function! VimEnter()
-    if argc() == 0
-    " gvim started with no files
-    if has("browse") == 1
-      let g:SessionFileName = browse(0, "Select Session", g:PathToSessions, g:PathToSessions . "LastSession.vim")
-      if g:SessionFileName != ""
-        exe "source " . g:SessionFileName
-      endif
-    else
-      " For non-gui vim
-      let LoadLastSession = confirm("Restore last session?", "&Yes\n&No")
-      if LoadLastSession == 1
-        exe "source " . g:PathToSessions . "LastSession.vim"
-      endif
-    endif
-  endif
-endfunction
-
-function! VimLeave()
-  exe "mksession! " . g:PathToSessions . "LastSession.vim"
-  if exists("g:SessionFileName") == 1
-    if g:SessionFileName != ""
-      exe "mksession! " . g:SessionFileName
-    endif
-  endif
-endfunction
-" A command for setting the session name
-com -nargs=1 SetSession :let g:SessionFileName = g:PathToSessions . <args> . ".vim"
-" .. and a command to unset it
-com -nargs=0 UnsetSession :let g:SessionFileName = ""
 
 " http://github.com/briancarper/dotfiles/blob/master/.vimrc
 " Use `:match none` to turn off the matches afterwards.
