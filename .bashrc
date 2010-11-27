@@ -128,3 +128,17 @@ mysql_genlog_off () {
 	mysql $@ -e "set global general_log = 0;"
 }
 
+locatedir () {
+	for last; do true; done
+	if [[ $last == *\/* ]]
+	then
+		locate $@ | grep "${last}\$"
+	else
+		locate $@ | grep "/${last}\$"
+	fi
+}
+
+locateext () {
+	for last; do true; done
+	locate $@ | grep "${last}\$"
+}
