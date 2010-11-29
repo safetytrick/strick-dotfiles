@@ -2,6 +2,10 @@
 # see /usr/share/doc/bash/examples/startup-files (in the package bash-doc)
 # for examples
 
+if [ -f ~/.bashrc_local ] 
+then
+	. ~/.bashrc_local
+fi
 
 PATH=$PATH:~/scripts/:~/bin/:~/opt/idea-IU-95.627/bin/
 HISTSIZE=1500
@@ -142,3 +146,4 @@ locateext () {
 	for last; do true; done
 	locate $@ | grep "${last}\$"
 }
+
