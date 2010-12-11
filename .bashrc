@@ -102,23 +102,21 @@ fi
 #. /home/michael/.django_bash_completion
 export PYTHONSTARTUP=~/.pythonrc
 
-
 alias ..='cd ..'
-alias c='clear'
-alias ~='cd ~'
 alias ...='cd ../..'
 alias h='history | grep $1'
-alias v=vim
 alias open=nautilus
 
 
-# http://chris-lamb.co.uk/2010/04/22/locating-source-any-python-module/
-# cd's to the source of a package
+# cd's to the source of a python package
 cdp () {
-  cd "$(python -c "import os.path as _, ${1}; \
-    print _.dirname(_.realpath(${1}.__file__[:-1]))"
-  )"
+  cd "$(python -c "import sys, imp, os  
+path = sys.path
+for i in '${1}'.split('.'): path = [imp.find_module(i,path)[1],]
+path = path[0] if os.path.isdir(path[0]) else os.path.dirname(path[0])
+print path")"
 }
+
 
 mysql_genlog_on () {
 	mysql $@ -e "set global general_log = 1;"
