@@ -2,6 +2,10 @@
 # see /usr/share/doc/bash/examples/startup-files (in the package bash-doc)
 # for examples
 
+if [ -f ~/.bashrc_local ] 
+then
+	. ~/.bashrc_local
+fi
 
 PATH=$PATH:~/scripts/:~/bin/:~/opt/idea-IU-95.627/bin/
 HISTSIZE=1500
@@ -124,5 +128,20 @@ mysql_genlog_on () {
 
 mysql_genlog_off () {
 	mysql $@ -e "set global general_log = 0;"
+}
+
+locatedir () {
+	for last; do true; done
+	if [[ $last == *\/* ]]
+	then
+		locate $@ | grep "${last}\$"
+	else
+		locate $@ | grep "/${last}\$"
+	fi
+}
+
+locateext () {
+	for last; do true; done
+	locate $@ | grep "${last}\$"
 }
 

@@ -22,8 +22,13 @@ set ruler
 set tabstop=4
 set shiftwidth=4
 set nobackup
+set nowritebackup
+set noswapfile
 
-let NERDTreeIgnore=['\.pyc$','\.swp$','\~$']
+" change cwd to root NERDTree directory
+let NERDTreeChDirMode=2
+" ignore pyc files
+let NERDTreeIgnore=['\.pyc$','\~$','\~$']
 
 " Inspired by http://github.com/ciaranm/dotfiles-ciaranm/tree/master
 set statusline=%f\ %2*%m\ %1*%h%r%=[%{&encoding}\ %{&fileformat}\ %{strlen(&ft)?&ft:'none'}\ %{getfperm(@%)}]\ 0x%B\ %12.(%c:%l/%L%)
