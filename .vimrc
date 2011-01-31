@@ -24,6 +24,8 @@ set shiftwidth=4
 set nobackup
 set nowritebackup
 set noswapfile
+set listchars=eol:\ ,tab:>-,trail:.,extends:>,nbsp:_ 
+set nowrap
 
 " change cwd to root NERDTree directory
 let NERDTreeChDirMode=2
@@ -71,14 +73,13 @@ endfunction
 inoremap <Tab> <C-R>=SuperCleverTab()<cr>
 
 "************************* Styles *************************
-colorscheme rdark
+colorscheme molokai
 if has('gui_running')
 	set lines=55 columns=125
 	set guifont=Monospace\ 9
 endif
 "************************* Python *************************
 let $DJANGO_SETTINGS_MODULE='settings'
-
 
 " Open NERDTree to the home directory for a python module
 function! Ntpy(module)
@@ -90,10 +91,53 @@ vim.command("let l:pymod_path='NERDTree %s'" % path)
 EOF
 exec l:pymod_path
 endfunction
+
+" Python tweaks
+" http://sontek.net/python-with-a-modular-ide-vim
+
+python << EOF
+import os
+import sys
+import vim
+for p in sys.path:
+    if os.path.isdir(p):
+        vim.command(r"set path+=%s" % (p.replace(" ", r"\ ")))
+EOF
+
+" run this first:
+" $ ctags -R -f ~/.vim/tags/python.ctags /usr/lib/python2.6/
+set tags+=$HOME/.vim/tags/python.ctags
+
+" Use CTRL + Left and CTRL + Right to move between ctagged files
+map <silent><C-Left> <C-T>
+map <silent><C-Right> <C-]>
+
 "************************ Mappings ************************
+"CTags
+"--------------------
+" Function: Open tag under cursor in new tab
+" Source:   http://stackoverflow.com/questions/563616/vimctags-tips-and-tricks
+"--------------------
+map <C-\> :tab split<CR>:exec("tag ".expand("<cword>"))<CR>
+"--------------------
+" Function: Open tag in a vertical split
+" Source:   http://stackoverflow.com/questions/563616/vimctags-tips-and-tricks
+"--------------------
+map <A-]> :vsp <CR>:exec("tag ".expand("<cword>"))<CR> 
+"--------------------
+" Function: Remap keys to make it more similar to firefox tab functionality
+" Purpose:  Because I am familiar with firefox tab functionality
+"--------------------
+map     <C-T>       :tabnew<CR>
+map     <C-N>       :!gvim &<CR><CR>
+map     <C-W>       :confirm bdelete<CR>
+
 map nt :NERDTree
 map tbn :tabnew
 map bt :browse tabnew
+
+" remap Ctrl-Space to autocomplete (normally Ctrl+X Ctrl+O)
+inoremap <Nul> <C-x><C-o>
 
 command! -nargs=* Ntp call Ntpy(<f-args>)
 command! Q q
