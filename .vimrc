@@ -1,4 +1,4 @@
-set nocompatible
+OBset nocompatible
 source $VIMRUNTIME/vimrc_example.vim
 source $VIMRUNTIME/mswin.vim
 
@@ -25,11 +25,13 @@ set nobackup
 set nowritebackup
 set noswapfile
 set autoread
+set listchars=eol:\ ,tab:>-,trail:.,extends:>,nbsp:_ 
+set nowrap
 
 " change cwd to root NERDTree directory
 let NERDTreeChDirMode=2
 " ignore pyc files
-let NERDTreeIgnore=['\.pyc$','\~$']
+let NERDTreeIgnore=['\.pyc$','\~$','\~$']
 
 " Inspired by http://github.com/ciaranm/dotfiles-ciaranm/tree/master
 set statusline=%f\ %2*%m\ %1*%h%r%=[%{&encoding}\ %{&fileformat}\ %{strlen(&ft)?&ft:'none'}\ %{getfperm(@%)}]\ 0x%B\ %12.(%c:%l/%L%)
@@ -37,19 +39,48 @@ set statusline=%f\ %2*%m\ %1*%h%r%=[%{&encoding}\ %{&fileformat}\ %{strlen(&ft)?
 
 "*********************** Completion ***********************
 let g:SuperTabDefaultCompletionType = 'context'
-autocmd FileType python set omnifunc=pythoncomplete#Complete
-autocmd FileType javascript set omnifunc=javascriptcomplete#CompleteJS
-autocmd FileType css set omnifunc=csscomplete#CompleteCSS
-au BufRead,BufNewFile jquery.*.js set ft=javascript syntax=jquery
+augroup vimrc_completecmds
+	au!
+	autocmd FileType python set omnifunc=pythoncomplete#Complete
+	autocmd FileType javascript set omnifunc=javascriptcomplete#CompleteJS
+	autocmd FileType html set omnifunc=htmlcomplete#CompleteTags
+	autocmd FileType css set omnifunc=csscomplete#CompleteCSS
+	autocmd FileType xml set omnifunc=xmlcomplete#CompleteTags
+	autocmd FileType php set omnifunc=phpcomplete#CompletePHP
+
+	au BufRead,BufNewFile jquery.*.js set ft=javascript syntax=jquery
+	autocmd FileType python set list
+
+	"" Not sure if this is behavior that I want?
+	"" Automatically cd into the directory that the file is in
+	""autocmd BufEnter * execute "chdir ".escape(expand("%:p:h"), ' ')
+augroup END
+
+" http://blogs.gnome.org/lharris/2008/07/20/code-completion-with-vim-7/
+function! SuperCleverTab()
+    if strpart(getline('.'), 0, col('.') - 1) =~ '^\s*$'
+        return "\<Tab>"
+    else
+        if &omnifunc != ''
+            return "\<C-X>\<C-O>"
+        elseif &dictionary != ''
+            return "\<C-K>"
+        else
+            return "\<C-N>"
+        endif
+    endif
+endfunction
+
+inoremap <Tab> <C-R>=SuperCleverTab()<cr>
+
 "************************* Styles *************************
 colorscheme molokai
-set guifont="Monospace\ 9"
 if has('gui_running')
 	set lines=55 columns=125
+	set guifont=Monospace\ 9
 endif
 "************************* Python *************************
 let $DJANGO_SETTINGS_MODULE='settings'
-autocmd FileType python set list
 
 " Open NERDTree to the home directory for a python module
 function! Ntpy(module)
@@ -61,13 +92,60 @@ vim.command("let l:pymod_path='NERDTree %s'" % path)
 EOF
 exec l:pymod_path
 endfunction
+
+" Python tweaks
+" http://sontek.net/python-with-a-modular-ide-vim
+
+python << EOF
+import os
+import sys
+import vim
+for p in sys.path:
+    if os.path.isdir(p):
+        vim.command(r"set path+=%s" % (p.replace(" ", r"\ ")))
+EOF
+
+" run this first:
+" $ ctags -R -f ~/.vim/tags/python.ctags /usr/lib/python2.6/
+set tags+=$HOME/.vim/tags/python.ctags
+
+" Use CTRL + Left and CTRL + Right to move between ctagged files
+map <silent><C-Left> <C-T>
+map <silent><C-Right> <C-]>
+
 "************************ Mappings ************************
+"CTags
+"--------------------
+" Function: Open tag under cursor in new tab
+" Source:   http://stackoverflow.com/questions/563616/vimctags-tips-and-tricks
+"--------------------
+map <C-\> :tab split<CR>:exec("tag ".expand("<cword>"))<CR>
+"--------------------
+" Function: Open tag in a vertical split
+" Source:   http://stackoverflow.com/questions/563616/vimctags-tips-and-tricks
+"--------------------
+map <A-]> :vsp <CR>:exec("tag ".expand("<cword>"))<CR> 
+" Function: we are about to remap the C-T tag pop command
+" so let's remap it to something else
+map <C-[> :pop<CR>
+
+"--------------------
+" Function: Remap keys to make it more similar to firefox tab functionality
+" Purpose:  Because I am familiar with firefox tab functionality
+"--------------------
+map     <C-T>       :tabnew<CR>
+map     <C-N>       :!gvim &<CR><CR>
+map     <C-W>       :confirm bdelete<CR>
+
 map nt :NERDTree
 map tbn :tabnew
 map bt :browse tabnew
 
-command -nargs=* Ntp call Ntpy(<f-args>)
+" remap Ctrl-Space to autocomplete (normally Ctrl+X Ctrl+O)
+inoremap <Nul> <C-x><C-o>
 
+command! -nargs=* Ntp call Ntpy(<f-args>)
+command! Q q
 "Zen coding keys
 let g:user_zen_expandabbr_key = '<c-e>'
 let g:use_zen_complete_tag = 1
