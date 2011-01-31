@@ -24,6 +24,7 @@ set shiftwidth=4
 set nobackup
 set nowritebackup
 set noswapfile
+set autoread
 
 " change cwd to root NERDTree directory
 let NERDTreeChDirMode=2
@@ -41,7 +42,8 @@ autocmd FileType javascript set omnifunc=javascriptcomplete#CompleteJS
 autocmd FileType css set omnifunc=csscomplete#CompleteCSS
 au BufRead,BufNewFile jquery.*.js set ft=javascript syntax=jquery
 "************************* Styles *************************
-colorscheme rdark
+colorscheme molokai
+set guifont="Monospace\ 9"
 if has('gui_running')
 	set lines=55 columns=125
 endif
@@ -90,6 +92,11 @@ function! CountLines()
 	echo i . " lines match."
 	norm ''
 endfunction
+
+function! Pwd()
+    let path=expand('%:h')
+    return system('cd "' . path . '"; pwd -L')
+endfunction! 
 
 " Indent fun
 vnoremap > >gv

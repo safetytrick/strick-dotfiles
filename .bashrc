@@ -85,9 +85,9 @@ if [ "$TERM" != "dumb" ] && [ -x /usr/bin/dircolors ]; then
     alias dir='ls --color=auto --format=vertical'
     alias vdir='ls --color=auto --format=long'
 
-    alias grep='grep --color=auto'
-    alias fgrep='fgrep --color=auto'
-    alias egrep='egrep --color=auto'
+    alias grep='grep --color=auto --exclude-dir=".svn"'
+    alias fgrep='fgrep --color=auto --exclude-dir=".svn"'
+    alias egrep='egrep --color=auto --exclude-dir=".svn"'
 fi
 
 # some more ls aliases
@@ -104,7 +104,7 @@ fi
 
 # python specific
 #. /home/michael/.django_bash_completion
-export PYTHONSTARTUP=~/.pythonrc
+#export PYTHONSTARTUP=~/.pythonrc
 
 
 alias ..='cd ..'
@@ -112,9 +112,9 @@ alias c='clear'
 alias ~='cd ~'
 alias ...='cd ../..'
 alias h='history | grep $1'
-alias v=vim
 alias open=nautilus
-
+alias atfd='ant test-failures -Dtest.remoteDebug=true'
+alias atf='ant test-failures'
 
 # http://chris-lamb.co.uk/2010/04/22/locating-source-any-python-module/
 # cd's to the source of a package
@@ -122,6 +122,11 @@ cdp () {
   cd "$(python -c "import os.path as _, ${1}; \
     print _.dirname(_.realpath(${1}.__file__[:-1]))"
   )"
+}
+
+# cds to the parent directory of first search result
+cdfind() {
+	cd $(dirname $(find "$@" 2>/dev/null | head -n1))
 }
 
 mysql_genlog_on () {
