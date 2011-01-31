@@ -1,0 +1,1 @@
+/home/mnielson/dotfiles/.vim
