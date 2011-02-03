@@ -1,5 +1,4 @@
-OBset nocompatible
-source $VIMRUNTIME/vimrc_example.vim
+set nocompatible
 source $VIMRUNTIME/mswin.vim
 
 filetype plugin on
