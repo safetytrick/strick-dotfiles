@@ -126,7 +126,7 @@ map <C-\> :tab split<CR>:exec("tag ".expand("<cword>"))<CR>
 map <A-]> :vsp <CR>:exec("tag ".expand("<cword>"))<CR> 
 " Function: we are about to remap the C-T tag pop command
 " so let's remap it to something else
-map <C-[> :pop<CR>
+"map <C-[> :pop<CR>
 
 "--------------------
 " Function: Remap keys to make it more similar to firefox tab functionality
