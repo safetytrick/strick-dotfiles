@@ -136,7 +136,7 @@ map <C-Y> :pop<CR>
 "--------------------
 map     <C-T>       :tabnew<CR>
 map     <C-N>       :!gvim &<CR><CR>
-map     <C-W>       :confirm bdelete<CR>
+"map     <C-W>       :confirm bdelete<CR>
 
 map nt :NERDTree
 map tbn :tabnew
@@ -182,3 +182,7 @@ vnoremap > >gv
 vnoremap < <gv
 vnoremap <Tab> >
 vnoremap <S-Tab> <
+
+
+
+
