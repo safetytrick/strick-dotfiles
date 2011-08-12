@@ -108,8 +108,7 @@ fi
 alias ..='cd ..'
 alias ...='cd ../..'
 alias h='history | grep $1'
-alias open=nautilus
-
+alias open=xdg-open
 
 # cd's to the source of a python package
 cdp () {
@@ -148,9 +147,12 @@ locateext () {
 	locate $@ | grep "${last}\$"
 }
 
+findclass() {
+	find "$1" -name "*.jar" -exec sh -c 'jar -tf {}|grep -H --label {} '$2'' \;
+}
+
 # it would be nice to write some utils to help with property lookup
 # find . -wholename \*conf/messages.properties -print0 | xargs -0 grep "kickstart"
-
 
 repeat () {
 	n=$1
