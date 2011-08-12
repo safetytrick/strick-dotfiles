@@ -108,7 +108,7 @@ fi
 alias ..='cd ..'
 alias ...='cd ../..'
 alias h='history | grep $1'
-alias open=nautilus
+alias open=xdg-open
 alias atfd='ant test-failures -Dtest.remoteDebug=true'
 alias atf='ant test-failures'
 
@@ -147,5 +147,9 @@ locatedir () {
 locateext () {
 	for last; do true; done
 	locate $@ | grep "${last}\$"
+}
+
+findclass() {
+	find "$1" -name "*.jar" -exec sh -c 'jar -tf {}|grep -H --label {} '$2'' \;
 }
 
