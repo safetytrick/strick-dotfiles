@@ -108,6 +108,8 @@ EOF
 " run this first:
 " $ ctags -R -f ~/.vim/tags/python.ctags /usr/lib/python2.6/
 set tags+=$HOME/.vim/tags/python.ctags
+set tags=tags;/
+
 
 " Use CTRL + Left and CTRL + Right to move between ctagged files
 map <silent><C-Left> <C-T>
@@ -127,7 +129,8 @@ map <C-\> :tab split<CR>:exec("tag ".expand("<cword>"))<CR>
 map <A-]> :vsp <CR>:exec("tag ".expand("<cword>"))<CR> 
 " Function: we are about to remap the C-T tag pop command
 " so let's remap it to something else
-"map <C-[> :pop<CR>
+
+map <C-Y> :pop<CR>
 
 "--------------------
 " Function: Remap keys to make it more similar to firefox tab functionality
@@ -135,7 +138,7 @@ map <A-]> :vsp <CR>:exec("tag ".expand("<cword>"))<CR>
 "--------------------
 map     <C-T>       :tabnew<CR>
 map     <C-N>       :!gvim &<CR><CR>
-map     <C-W>       :confirm bdelete<CR>
+"map     <C-W>       :confirm bdelete<CR>
 
 map nt :NERDTree
 map tbn :tabnew
@@ -181,3 +184,7 @@ vnoremap > >gv
 vnoremap < <gv
 vnoremap <Tab> >
 vnoremap <S-Tab> <
+
+
+
+

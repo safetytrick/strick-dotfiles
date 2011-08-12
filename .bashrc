@@ -109,8 +109,6 @@ alias ..='cd ..'
 alias ...='cd ../..'
 alias h='history | grep $1'
 alias open=xdg-open
-alias atfd='ant test-failures -Dtest.remoteDebug=true'
-alias atf='ant test-failures'
 
 # cd's to the source of a python package
 cdp () {
@@ -153,3 +151,18 @@ findclass() {
 	find "$1" -name "*.jar" -exec sh -c 'jar -tf {}|grep -H --label {} '$2'' \;
 }
 
+# it would be nice to write some utils to help with property lookup
+# find . -wholename \*conf/messages.properties -print0 | xargs -0 grep "kickstart"
+
+repeat () {
+	n=$1
+	shift
+	while [ $(( n -= 1 )) -ge 0 ]
+	do
+		"$@"
+	done
+}
+
+revertiml () {
+	svn revert *.iml **/*.iml	
+}
