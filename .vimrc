@@ -186,8 +186,8 @@ vnoremap <Tab> >
 vnoremap <S-Tab> <
 
 " add a disable/enable flag
-" verify that that file is present in the url or as a resource on the page
-" etc.
+" verify that that file is present in the url or as a resource on the page etc. 
+" expand("%:t") returns the filename
 autocmd BufWriteCmd *.html,*.css,*.jss :call Refresh_firefox()
 function! Refresh_firefox()
   if &modified
