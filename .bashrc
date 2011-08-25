@@ -167,3 +167,21 @@ repeat () {
 revertiml () {
 	svn revert *.iml **/*.iml	
 }
+
+truthy() {
+	if [[ $0 ]] ; then
+		echo "true"
+	else
+		echo "false"
+	fi
+}
+
+toback() {
+	mv "$1" "$1.bak"
+}
+
+unback() {
+	mv "$1" "`basename "$1" .bak`"
+}
+
+alias pushtab='firefox --display=:0.0 -new-tab '
