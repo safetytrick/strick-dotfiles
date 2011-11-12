@@ -188,18 +188,22 @@ vnoremap <S-Tab> <
 " add a disable/enable flag
 " verify that that file is present in the url or as a resource on the page etc. 
 " expand("%:t") returns the filename
-autocmd BufWriteCmd *.html,*.css,*.jss :call Refresh_firefox()
+"
+" for now this is disabled, it was nice to use but quite a pain to setup
+" both firefox and this setting
+""autocmd BufWriteCmd *.html,*.css,*.jss :call Refresh_firefox()
 function! Refresh_firefox()
-  if &modified
-    write
+  ""if &modified
+    ""write
     silent !echo  'vimYo = content.window.pageYOffset;
           \ vimXo = content.window.pageXOffset;
           \ BrowserReload();
           \ content.window.scrollTo(vimXo,vimYo);
           \ repl.quit();'  |
-          \ nc localhost 4242 2>&1 > /dev/null
-  endif
+          \ nc -w 1 localhost 4242 2>&1 > /dev/null
+  ""endif
 endfunction
+nmap <silent> <leader>r :call Refresh_firefox()<CR>
 
 command! -nargs=1 Repl silent !echo
       \ "repl.home();
