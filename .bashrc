@@ -6,7 +6,10 @@ then
 	. ~/.bashrc_local
 fi
 
-PATH=$PATH:~/scripts/:~/bin/:~/opt/idea-IU-95.627/bin/
+PATH=$PATH:~/scripts/:~/bin/
+if [ "x$JAVA_HOME" != "x" ]; then
+	PATH=$PATH:$JAVA_HOME/bin
+fi
 HISTSIZE=1500
 export PATH
 #export HISTIGNORE="&:ls:ls *:[bf]g:exit"
@@ -148,7 +151,14 @@ locateext () {
 }
 
 findclass() {
-	find "$1" -name "*.jar" -exec sh -c 'jar -tf {}|grep -H --label {} '$2'' \;
+	# lame, i hate working with bash arrays
+	if [ $# == 2 ]
+	then
+		find "$1" -name "*.jar" -exec sh -c 'jar -tf {}|grep -H --label {} '$2'' \;
+	else
+		find "." -name "*.jar" -exec sh -c 'jar -tf {}|grep -H --label {} '$1'' \;
+	fi
+	
 }
 
 # it would be nice to write some utils to help with property lookup
@@ -184,3 +194,92 @@ unback() {
 }
 
 alias pushtab='firefox --display=:0.0 -new-tab '
+
+export svnroot=svn+ssh://michaelnielson@svn.ops.ut.us.attask.com/SVN/Development/redrock
+cobranch() {
+	cd /src/
+	svn co $svnroot/branches/$1
+	cd $1
+	ant intellij
+}
+
+# uncommit revision, thanks joel
+function svnuc {
+	for revision in $@
+	do
+		svn merge -c -$revision .
+	done
+}
+
+# delete svn st ? files
+# svn st |grep -e ^\? -e ^I | awk '{print $2}'| xargs -r rm -r
+
+alias svnre='~/scripts/pysvn.py'
+
+lsdeployed() {
+	find /attask/AtTask/AtTaskJBoss/server/default/ -maxdepth 2 -type d -name redrock.ear 
+}
+
+# http://madebynathan.com/2011/10/04/a-nicer-way-to-use-xclip/
+#
+# A shortcut function that simplifies usage of xclip.
+# - Accepts input from either stdin (pipe), or params.
+# - If the input is a filename that exists, then it
+#   uses the contents of that file.
+# ------------------------------------------------
+cb() {
+  local _scs_col="\e[0;32m"; local _wrn_col='\e[1;31m'; local _trn_col='\e[0;33m'
+  # Check that xclip is installed.
+  if ! type xclip > /dev/null 2>&1; then
+    echo -e "$_wrn_col""You must have the 'xclip' program installed.\e[0m"
+  # Check user is not root (root doesn't have access to user xorg server)
+  elif [ "$USER" == "root" ]; then
+    echo -e "$_wrn_col""Must be regular user (not root) to copy a file to the clipboard.\e[0m"
+  else
+    # If no tty, data should be available on stdin
+    if [ "$( tty )" == 'not a tty' ]; then
+      input="$(< /dev/stdin)"
+    # Else, fetch input from params
+    else
+      input="$*"
+    fi
+    if [ -z "$input" ]; then  # If no input, print usage message.
+      echo "Copies a string or the contents of a file to the clipboard."
+      echo "Usage: cb <string or file>"
+      echo "       echo <string or file> | cb"
+    else
+      # If the input is a filename that exists, then use the contents of that file.
+      if [ -e "$input" ]; then input="$(cat $input)"; fi
+      # Copy input to clipboard
+      echo -n "$input" | xclip -selection c
+      # Truncate text for status
+      if [ ${#input} -gt 80 ]; then input="$(echo $input | cut -c1-80)$_trn_col...\e[0m"; fi
+      # Print status.
+      echo -e "$_scs_col""Copied to clipboard:\e[0m $input"
+    fi
+  fi
+}
+
+# adjust cb() for copying paths
+cbp() {
+  input="$*"
+  echo -n "$input" | xclip -selection c
+  # Truncate text for status
+  if [ ${#input} -gt 80 ]; then input="$(echo $input | cut -c1-80)$_trn_col...\e[0m"; fi
+  # Print status.
+  echo -e "$_scs_col""Copied to clipboard:\e[0m $input"
+}
+
+# Shortcut to copy SSH public key to clipboard.
+alias cb_ssh="cb ~/.ssh/id_rsa.pub"
+
+
+ant_debug() {
+	opts="-XX:MaxPermSize=256m -Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=8789"
+	if [[ $ANT_OPTS == $opts ]]; then
+		export ANT_OPTS=""
+	else
+		export ANT_OPTS=$opts
+	fi
+	unset opts
+}
