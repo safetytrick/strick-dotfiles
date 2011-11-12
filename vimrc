@@ -185,6 +185,33 @@ vnoremap < <gv
 vnoremap <Tab> >
 vnoremap <S-Tab> <
 
+" add a disable/enable flag
+" verify that that file is present in the url or as a resource on the page etc. 
+" expand("%:t") returns the filename
+autocmd BufWriteCmd *.html,*.css,*.jss :call Refresh_firefox()
+function! Refresh_firefox()
+  if &modified
+    write
+    silent !echo  'vimYo = content.window.pageYOffset;
+          \ vimXo = content.window.pageXOffset;
+          \ BrowserReload();
+          \ content.window.scrollTo(vimXo,vimYo);
+          \ repl.quit();'  |
+          \ nc localhost 4242 2>&1 > /dev/null
+  endif
+endfunction
 
+command! -nargs=1 Repl silent !echo
+      \ "repl.home();
+      \ content.location.href = '<args>';
+      \ repl.enter(content);
+      \ repl.quit();" |
+      \ nc localhost 4242
 
+nmap <leader>mh :Repl http://
+" mnemonic is MozRepl Http
+nmap <silent> <leader>ml :Repl file:///%:p<CR>
+" mnemonic is MozRepl Local
+nmap <silent> <leader>md :Repl http://localhost/
+" mnemonic is MozRepl Development
 

@@ -6,10 +6,11 @@ then
 	. ~/.bashrc_local
 fi
 
-PATH=$PATH:~/scripts/:~/bin/
 if [ "x$JAVA_HOME" != "x" ]; then
 	PATH=$PATH:$JAVA_HOME/bin
 fi
+GRADLE_HOME=~/opt/gradle
+PATH=$PATH:~/scripts/:~/bin/:$GRADLE_HOME/bin
 HISTSIZE=1500
 export PATH
 #export HISTIGNORE="&:ls:ls *:[bf]g:exit"
