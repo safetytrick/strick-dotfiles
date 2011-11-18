@@ -219,3 +219,6 @@ nmap <silent> <leader>ml :Repl file:///%:p<CR>
 nmap <silent> <leader>md :Repl http://localhost/
 " mnemonic is MozRepl Development
 
+" toggle case
+nnoremap <C-u> g~iw
+inoremap <C-u> <esc>g~iwea

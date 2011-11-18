@@ -6,6 +6,7 @@ ln -s $@ $DIRECTORY/vimrc $HOME/.vimrc
 ln -s $@ $DIRECTORY/bashrc $HOME/.bashrc
 ln -s $@ $DIRECTORY/vim $HOME/.vim
 ln -s $@ $DIRECTORY/ctags $HOME/.ctags
+ln -s $@ $DIRECTORY/pythonrc $HOME/.pythonrc
 
 # setup git global settings
 

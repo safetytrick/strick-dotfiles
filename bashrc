@@ -107,7 +107,7 @@ fi
 
 # python specific
 #. /home/michael/.django_bash_completion
-#export PYTHONSTARTUP=~/.pythonrc
+export PYTHONSTARTUP=~/.pythonrc
 
 alias ..='cd ..'
 alias ...='cd ../..'
