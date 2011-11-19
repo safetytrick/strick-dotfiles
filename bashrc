@@ -111,9 +111,13 @@ export PYTHONSTARTUP=~/.pythonrc
 
 alias ..='cd ..'
 alias ...='cd ../..'
-alias h='history | grep $1'
+alias h=history_grep
 alias open=xdg-open
 
+history_grep() {
+	shift
+	history | grep "$@"
+}
 # cd's to the source of a python package
 cdp () {
   cd "$(python -c "import sys, imp, os  
