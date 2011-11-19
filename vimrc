@@ -223,3 +223,6 @@ nmap <silent> <leader>md :Repl http://localhost/
 
 " pasting into from an external source can cause funky formatting
 " call :set paste first, then :set nopaste after pasting
+" toggle case
+nnoremap <C-u> g~iw
+inoremap <C-u> <esc>g~iwea
