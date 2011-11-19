@@ -26,7 +26,9 @@ set noswapfile
 set autoread
 set listchars=eol:\ ,tab:>-,trail:.,extends:>,nbsp:_ 
 set nowrap
-
+" not read to enable this
+" set clipboard=unnamed " won't clobber clipboard unnecessarily
+" set clipboard=unnamedplus,autoselect " Use + register (X Window clipboard) as unnamed register
 " change cwd to root NERDTree directory
 let NERDTreeChDirMode=2
 " ignore pyc files
@@ -219,3 +221,5 @@ nmap <silent> <leader>ml :Repl file:///%:p<CR>
 nmap <silent> <leader>md :Repl http://localhost/
 " mnemonic is MozRepl Development
 
+" pasting into from an external source can cause funky formatting
+" call :set paste first, then :set nopaste after pasting
