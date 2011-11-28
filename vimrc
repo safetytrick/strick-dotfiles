@@ -226,3 +226,8 @@ nnoremap <silent> <leader>md :Repl http://localhost/
 " toggle case
 nnoremap <C-u> g~iw
 inoremap <C-u> <esc>g~iwea
+
+" edit and source vimrc
+nnoremap <silent> <leader>ev :e $MYVIMRC<CR>
+nnoremap <silent> <leader>sv :so $MYVIMRC<CR>
+
