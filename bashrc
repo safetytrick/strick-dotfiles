@@ -115,8 +115,8 @@ alias h=history_grep
 alias open=xdg-open
 
 history_grep() {
-	shift
-	history | grep "$@"
+	_grh="$@"
+	history | grep "$_grh"
 }
 # cd's to the source of a python package
 cdp () {
