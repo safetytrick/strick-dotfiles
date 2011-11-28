@@ -1,6 +1,8 @@
 set nocompatible
 source $VIMRUNTIME/mswin.vim
 
+call pathogen#infect()
+
 filetype plugin on
 set ofu=syntaxcomplete#Complete
 "*********************** Preferences **********************
