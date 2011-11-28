@@ -114,8 +114,8 @@ set tags=tags;/
 
 
 " Use CTRL + Left and CTRL + Right to move between ctagged files
-map <silent><C-Left> <C-T>
-map <silent><C-Right> <C-]>
+noremap <silent><C-Left> <C-T>
+noremap <silent><C-Right> <C-]>
 
 "************************ Mappings ************************
 "CTags
@@ -123,28 +123,28 @@ map <silent><C-Right> <C-]>
 " Function: Open tag under cursor in new tab
 " Source:   http://stackoverflow.com/questions/563616/vimctags-tips-and-tricks
 "--------------------
-map <C-\> :tab split<CR>:exec("tag ".expand("<cword>"))<CR>
+noremap <C-\> :tab split<CR>:exec("tag ".expand("<cword>"))<CR>
 "--------------------
 " Function: Open tag in a vertical split
 " Source:   http://stackoverflow.com/questions/563616/vimctags-tips-and-tricks
 "--------------------
-map <A-]> :vsp <CR>:exec("tag ".expand("<cword>"))<CR> 
+noremap <A-]> :vsp <CR>:exec("tag ".expand("<cword>"))<CR> 
 " Function: we are about to remap the C-T tag pop command
 " so let's remap it to something else
 
-map <C-Y> :pop<CR>
+noremap <C-Y> :pop<CR>
 
 "--------------------
 " Function: Remap keys to make it more similar to firefox tab functionality
 " Purpose:  Because I am familiar with firefox tab functionality
 "--------------------
-map     <C-T>       :tabnew<CR>
-map     <C-N>       :!gvim &<CR><CR>
+noremap     <C-T>       :tabnew<CR>
+noremap     <C-N>       :!gvim &<CR><CR>
 "map     <C-W>       :confirm bdelete<CR>
 
-map nt :NERDTree
-map tbn :tabnew
-map bt :browse tabnew
+noremap nt :NERDTree
+noremap tbn :tabnew
+noremap bt :browse tabnew
 
 " remap Ctrl-Space to autocomplete (normally Ctrl+X Ctrl+O)
 inoremap <Nul> <C-x><C-o>
@@ -205,7 +205,7 @@ function! Refresh_firefox()
           \ nc -w 1 localhost 4242 2>&1 > /dev/null
   ""endif
 endfunction
-nmap <silent> <leader>r :call Refresh_firefox()<CR>
+nnoremap <silent> <leader>r :call Refresh_firefox()<CR>
 
 command! -nargs=1 Repl silent !echo
       \ "repl.home();
@@ -214,11 +214,11 @@ command! -nargs=1 Repl silent !echo
       \ repl.quit();" |
       \ nc localhost 4242
 
-nmap <leader>mh :Repl http://
+nnoremap <leader>mh :Repl http://
 " mnemonic is MozRepl Http
-nmap <silent> <leader>ml :Repl file:///%:p<CR>
+nnoremap <silent> <leader>ml :Repl file:///%:p<CR>
 " mnemonic is MozRepl Local
-nmap <silent> <leader>md :Repl http://localhost/
+nnoremap <silent> <leader>md :Repl http://localhost/
 " mnemonic is MozRepl Development
 
 " pasting into from an external source can cause funky formatting
