@@ -82,32 +82,39 @@ endif
 "************************* Python *************************
 let $DJANGO_SETTINGS_MODULE='settings'
 
-" Open NERDTree to the home directory for a python module
-function! Ntpy(module)
-python << EOF
+if has('python') "requires inline python
+	" Open NERDTree to the home directory for a python module
+	function! Ntpy(module)
+	
+python << ____EOF
 import vim, os.path
 module = __import__(vim.eval('a:module'))
 path = os.path.dirname(os.path.realpath(module.__file__[:-1]))
 vim.command("let l:pymod_path='NERDTree %s'" % path)
-EOF
-exec l:pymod_path
-endfunction
 
-" Python tweaks
-" http://sontek.net/python-with-a-modular-ide-vim
+____EOF
 
-python << EOF
+	exec l:pymod_path
+	endfunction
+
+	" Python tweaks
+	" http://sontek.net/python-with-a-modular-ide-vim
+
+python << ____EOF
+
 import os
 import sys
 import vim
 for p in sys.path:
-    if os.path.isdir(p):
-        vim.command(r"set path+=%s" % (p.replace(" ", r"\ ")))
-EOF
+	if os.path.isdir(p):
+		vim.command(r"set path+=%s" % (p.replace(" ", r"\ ")))
 
-" run this first:
-" $ ctags -R -f ~/.vim/tags/python.ctags /usr/lib/python2.6/
-set tags+=$HOME/.vim/tags/python.ctags
+____EOF
+
+	" run this first:
+	" $ ctags -R -f ~/.vim/tags/python.ctags /usr/lib/python2.6/
+	set tags+=$HOME/.vim/tags/python.ctags
+endif "has python
 
 " Use CTRL + Left and CTRL + Right to move between ctagged files
 map <silent><C-Left> <C-T>

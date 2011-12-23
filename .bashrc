@@ -11,6 +11,9 @@ HISTSIZE=1500
 export PATH
 #export HISTIGNORE="&:ls:ls *:[bf]g:exit"
 
+# appends local change to history and fetches other changes (works with multiple terminals)
+PROMPT_COMMAND="$PROMPT_COMMAND; history -a; history -n"
+
 # If not running interactively, don't do anything
 [ -z "$PS1" ] && return
 
