@@ -1,6 +1,8 @@
 set nocompatible
 source $VIMRUNTIME/mswin.vim
 
+call pathogen#infect()
+
 filetype plugin on
 set ofu=syntaxcomplete#Complete
 "*********************** Preferences **********************
@@ -26,7 +28,9 @@ set noswapfile
 set autoread
 set listchars=eol:\ ,tab:>-,trail:.,extends:>,nbsp:_ 
 set nowrap
-
+" not read to enable this
+" set clipboard=unnamed " won't clobber clipboard unnecessarily
+set clipboard=unnamedplus,autoselect " Use + register (X Window clipboard) as unnamed register
 " change cwd to root NERDTree directory
 let NERDTreeChDirMode=2
 " ignore pyc files
@@ -116,9 +120,11 @@ ____EOF
 	set tags+=$HOME/.vim/tags/python.ctags
 endif "has python
 
+set tags=tags;/
+
 " Use CTRL + Left and CTRL + Right to move between ctagged files
-map <silent><C-Left> <C-T>
-map <silent><C-Right> <C-]>
+noremap <silent><C-Left> <C-T>
+noremap <silent><C-Right> <C-]>
 
 "************************ Mappings ************************
 "CTags
@@ -126,27 +132,28 @@ map <silent><C-Right> <C-]>
 " Function: Open tag under cursor in new tab
 " Source:   http://stackoverflow.com/questions/563616/vimctags-tips-and-tricks
 "--------------------
-map <C-\> :tab split<CR>:exec("tag ".expand("<cword>"))<CR>
+noremap <C-\> :tab split<CR>:exec("tag ".expand("<cword>"))<CR>
 "--------------------
 " Function: Open tag in a vertical split
 " Source:   http://stackoverflow.com/questions/563616/vimctags-tips-and-tricks
 "--------------------
-map <A-]> :vsp <CR>:exec("tag ".expand("<cword>"))<CR> 
+noremap <A-]> :vsp <CR>:exec("tag ".expand("<cword>"))<CR> 
 " Function: we are about to remap the C-T tag pop command
 " so let's remap it to something else
-"map <C-[> :pop<CR>
+
+noremap <C-Y> :pop<CR>
 
 "--------------------
 " Function: Remap keys to make it more similar to firefox tab functionality
 " Purpose:  Because I am familiar with firefox tab functionality
 "--------------------
-map     <C-T>       :tabnew<CR>
-map     <C-N>       :!gvim &<CR><CR>
-map     <C-W>       :confirm bdelete<CR>
+noremap     <C-T>       :tabnew<CR>
+noremap     <C-N>       :!gvim &<CR><CR>
+"map     <C-W>       :confirm bdelete<CR>
 
-map nt :NERDTree
-map tbn :tabnew
-map bt :browse tabnew
+noremap nt :NERDTree
+noremap tbn :tabnew
+noremap bt :browse tabnew
 
 " remap Ctrl-Space to autocomplete (normally Ctrl+X Ctrl+O)
 inoremap <Nul> <C-x><C-o>
@@ -188,3 +195,48 @@ vnoremap > >gv
 vnoremap < <gv
 vnoremap <Tab> >
 vnoremap <S-Tab> <
+
+" add a disable/enable flag
+" verify that that file is present in the url or as a resource on the page etc. 
+" expand("%:t") returns the filename
+"
+" for now this is disabled, it was nice to use but quite a pain to setup
+" both firefox and this setting
+""autocmd BufWriteCmd *.html,*.css,*.jss :call Refresh_firefox()
+function! Refresh_firefox()
+  ""if &modified
+    ""write
+    silent !echo  'vimYo = content.window.pageYOffset;
+          \ vimXo = content.window.pageXOffset;
+          \ BrowserReload();
+          \ content.window.scrollTo(vimXo,vimYo);
+          \ repl.quit();'  |
+          \ nc -w 1 localhost 4242 2>&1 > /dev/null
+  ""endif
+endfunction
+nnoremap <silent> <leader>r :call Refresh_firefox()<CR>
+
+command! -nargs=1 Repl silent !echo
+      \ "repl.home();
+      \ content.location.href = '<args>';
+      \ repl.enter(content);
+      \ repl.quit();" |
+      \ nc localhost 4242
+
+nnoremap <leader>mh :Repl http://
+" mnemonic is MozRepl Http
+nnoremap <silent> <leader>ml :Repl file:///%:p<CR>
+" mnemonic is MozRepl Local
+nnoremap <silent> <leader>md :Repl http://localhost/
+" mnemonic is MozRepl Development
+
+" pasting into from an external source can cause funky formatting
+" call :set paste first, then :set nopaste after pasting
+" toggle case
+nnoremap <C-u> g~iw
+inoremap <C-u> <esc>g~iwea
+
+" edit and source vimrc
+nnoremap <silent> <leader>ev :e $MYVIMRC<CR>
+nnoremap <silent> <leader>sv :so $MYVIMRC<CR>
+
