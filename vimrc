@@ -80,7 +80,11 @@ inoremap <Tab> <C-R>=SuperCleverTab()<cr>
 colorscheme molokai
 if has('gui_running')
 	set lines=55 columns=125
-	set guifont=Monospace\ 9
+	if has('mac')
+		set guifont=Menlo
+	else
+		set guifont=Monospace\ 9
+	endif
 	set guioptions-=T
 endif
 "************************* Python *************************
