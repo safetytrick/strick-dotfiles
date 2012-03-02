@@ -142,13 +142,7 @@ cdfind() {
 	cd $(dirname $(find "$@" 2>/dev/null | head -n1))
 }
 
-mysql_genlog_on () {
-	mysql $@ -e "set global general_log = 1;"
-}
 
-mysql_genlog_off () {
-	mysql $@ -e "set global general_log = 0;"
-}
 
 locatedir () {
 	for last; do true; done
@@ -186,10 +180,6 @@ repeat () {
 	do
 		"$@"
 	done
-}
-
-revertiml () {
-	svn revert *.iml **/*.iml	
 }
 
 truthy() {
@@ -305,6 +295,11 @@ ant_debug() {
 		export ANT_OPTS=$opts
 	fi
 	unset opts
+}
+
+revertiml() {
+	find . -name \*.iml -print0 | xargs -0 git checkout
+	git checkout .idea/ 
 }
 
 # inhibit conversion of port numbers to port names
