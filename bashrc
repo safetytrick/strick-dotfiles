@@ -13,6 +13,10 @@ GRADLE_HOME=~/opt/gradle
 PATH=$PATH:~/scripts/:~/bin/:$GRADLE_HOME/bin
 HISTSIZE=1500
 export PATH
+
+# "Linux" for linux, "Darwin" for osx
+os=`uname -s`
+
 #export HISTIGNORE="&:ls:ls *:[bf]g:exit"
 
 # appends local change to history and fetches other changes (works with multiple terminals)
@@ -122,7 +126,11 @@ export PYTHONSTARTUP=~/.pythonrc
 alias ..='cd ..'
 alias ...='cd ../..'
 alias h=history_grep
-alias open=xdg-open
+alias gvim=mvim
+
+if [ $os != "Darwin" ]; then
+	alias open=xdg-open
+fi
 
 history_grep() {
 	_grh="$@"
