@@ -9,10 +9,11 @@ fi
 if [ "x$JAVA_HOME" != "x" ]; then
 	PATH=$PATH:$JAVA_HOME/bin
 fi
-GRADLE_HOME=~/opt/gradle
-PATH=$PATH:~/scripts/:~/bin/:$GRADLE_HOME/bin
-HISTSIZE=1500
+PATH=$PATH:~/scripts/:~/bin/
 export PATH
+
+export HISTSIZE=15000
+export HISTFILESIZE=15000 # Record last 10,000 commands
 
 # "Linux" for linux, "Darwin" for osx
 os=`uname -s`
@@ -20,7 +21,11 @@ os=`uname -s`
 #export HISTIGNORE="&:ls:ls *:[bf]g:exit"
 
 # appends local change to history and fetches other changes (works with multiple terminals)
-PROMPT_COMMAND="$PROMPT_COMMAND; history -a; history -n"
+if [ $PROMPT_COMMAND ]; then
+	PROMPT_COMMAND="$PROMPT_COMMAND; history -a; history -n"
+else
+	PROMPT_COMMAND="history -a; history -n"
+fi
 
 # If not running interactively, don't do anything
 [ -z "$PS1" ] && return
@@ -36,11 +41,6 @@ shopt -s checkwinsize
 
 # make less more friendly for non-text input files, see lesspipe(1)
 [ -x /usr/bin/lesspipe ] && eval "$(lesspipe)"
-
-# set variable identifying the chroot you work in (used in the prompt below)
-if [ -z "$debian_chroot" ] && [ -r /etc/debian_chroot ]; then
-    debian_chroot=$(cat /etc/debian_chroot)
-fi
 
 # set a fancy prompt (non-color, unless we know we "want" color)
 case "$TERM" in
@@ -63,24 +63,21 @@ if [ -n "$force_color_prompt" ]; then
     fi
 fi
 
-YELLOW=""
-NO_COLOR=""
-
 parse_git_branch() {
 	git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/ (\1)/'
 }
 
 if [ "$color_prompt" = yes ]; then
-    PS1="${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\[\033[0;33m\]\$(parse_git_branch)\[\033[0m\]\$ "
+    PS1="\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\[\033[0;33m\]\$(parse_git_branch)\[\033[0m\]\$ "
 else
-    PS1="${debian_chroot:+($debian_chroot)}\u@\h:\w\ \$(parse_git_branch)$ "
+    PS1="\u@\h:\w\ \$(parse_git_branch)$ "
 fi
 unset color_prompt force_color_prompt
 
 # If this is an xterm set the title to user@host:dir
 case "$TERM" in
 xterm*|rxvt*)
-    PROMPT_COMMAND='echo -ne "\033]0;${USER}@${HOSTNAME}: ${PWD/$HOME/~}\007"'
+    PROMPT_COMMAND=$PROMPT_COMMAND'; echo -ne "\033]0;${USER}@${HOSTNAME}: ${PWD/$HOME/~}\007"'
     ;;
 *)
     ;;
@@ -130,12 +127,16 @@ alias gvim=mvim
 
 if [ $os != "Darwin" ]; then
 	alias open=xdg-open
+else
+	# git-completion
+	source /usr/local/git/contrib/completion/git-completion.bash
 fi
 
 history_grep() {
 	_grh="$@"
 	history | grep "$_grh"
 }
+
 # cd's to the source of a python package
 cdp () {
   cd "$(python -c "import sys, imp, os  
@@ -149,8 +150,6 @@ print path")"
 cdfind() {
 	cd $(dirname $(find "$@" 2>/dev/null | head -n1))
 }
-
-
 
 locatedir () {
 	for last; do true; done
@@ -190,14 +189,6 @@ repeat () {
 	done
 }
 
-truthy() {
-	if [[ $0 ]] ; then
-		echo "true"
-	else
-		echo "false"
-	fi
-}
-
 toback() {
 	mv "$1" "$1.bak"
 }
@@ -216,30 +207,10 @@ flip-coin() {
 	fi
 }
 
-export svnroot=svn+ssh://michaelnielson@svn.ops.ut.us.attask.com/SVN/Development/redrock
-cobranch() {
-	cd /src/
-	svn co $svnroot/branches/$1
-	cd $1
-	ant intellij
-}
-
-# uncommit revision, thanks joel
-function svnuc {
-	for revision in $@
-	do
-		svn merge -c -$revision .
-	done
-}
-
 # delete svn st ? files
 # svn st |grep -e ^\? -e ^I | awk '{print $2}'| xargs -r rm -r
 
 alias svnre='~/scripts/pysvn.py'
-
-lsdeployed() {
-	find /attask/AtTask/AtTaskJBoss/server/default/ -maxdepth 2 -type d -name redrock.ear 
-}
 
 # http://madebynathan.com/2011/10/04/a-nicer-way-to-use-xclip/
 #
@@ -293,7 +264,6 @@ cbp() {
 
 # Shortcut to copy SSH public key to clipboard.
 alias cb_ssh="cb ~/.ssh/id_rsa.pub"
-
 
 ant_debug() {
 	opts="-XX:MaxPermSize=256m -Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=8789"
