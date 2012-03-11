@@ -21,7 +21,7 @@ os=`uname -s`
 #export HISTIGNORE="&:ls:ls *:[bf]g:exit"
 
 # appends local change to history and fetches other changes (works with multiple terminals)
-if [ $PROMPT_COMMAND ]; then
+if [ "x$PROMPT_COMMAND" != "x" ]; then
 	PROMPT_COMMAND="$PROMPT_COMMAND; history -a; history -n"
 else
 	PROMPT_COMMAND="history -a; history -n"
