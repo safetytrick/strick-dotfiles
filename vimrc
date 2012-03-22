@@ -244,3 +244,5 @@ inoremap <C-u> <esc>g~iwea
 nnoremap <silent> <leader>ev :e $MYVIMRC<CR>
 nnoremap <silent> <leader>sv :so $MYVIMRC<CR>
 
+" some strategy with this would be nice: http://vim.wikia.com/wiki/Set_working_directory_to_the_current_file
+"cd %:p:h " cd to the directory of the current file

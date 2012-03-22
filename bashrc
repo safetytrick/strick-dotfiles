@@ -280,5 +280,7 @@ revertiml() {
 	git checkout .idea/ 
 }
 
+alias webs='python -m SimpleHTTPServer'
+
 # inhibit conversion of port numbers to port names
 # alias lsof="lsof -P"
