@@ -9,7 +9,7 @@ fi
 if [ "x$JAVA_HOME" != "x" ]; then
 	PATH=$PATH:$JAVA_HOME/bin
 fi
-PATH=$PATH:~/scripts/:~/bin/
+PATH=$PATH:~/scripts:~/bin
 export PATH
 
 export HISTSIZE=15000
