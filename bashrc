@@ -20,13 +20,6 @@ os=`uname -s`
 
 #export HISTIGNORE="&:ls:ls *:[bf]g:exit"
 
-# appends local change to history and fetches other changes (works with multiple terminals)
-if [ "x$PROMPT_COMMAND" != "x" ]; then
-	PROMPT_COMMAND="$PROMPT_COMMAND; history -a; history -n"
-else
-	PROMPT_COMMAND="history -a; history -n"
-fi
-
 # If not running interactively, don't do anything
 [ -z "$PS1" ] && return
 
@@ -77,7 +70,7 @@ unset color_prompt force_color_prompt
 # If this is an xterm set the title to user@host:dir
 case "$TERM" in
 xterm*|rxvt*)
-    PROMPT_COMMAND=$PROMPT_COMMAND'; echo -ne "\033]0;${USER}@${HOSTNAME}: ${PWD/$HOME/~}\007"'
+    PROMPT_COMMAND='echo -ne "\033]0;${USER}@${HOSTNAME}: ${PWD/$HOME/~}\007"'
     ;;
 *)
     ;;
@@ -123,13 +116,13 @@ export PYTHONSTARTUP=~/.pythonrc
 alias ..='cd ..'
 alias ...='cd ../..'
 alias h=history_grep
-alias gvim=mvim
 
 if [ $os != "Darwin" ]; then
 	alias open=xdg-open
 else
 	# git-completion
 	source /usr/local/git/contrib/completion/git-completion.bash
+	alias gvim=mvim
 fi
 
 history_grep() {
@@ -265,7 +258,7 @@ cbp() {
 # Shortcut to copy SSH public key to clipboard.
 alias cb_ssh="cb ~/.ssh/id_rsa.pub"
 
-ant_debug() {
+ant-debug() {
 	opts="-XX:MaxPermSize=256m -Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=8789"
 	if [[ $ANT_OPTS == $opts ]]; then
 		export ANT_OPTS=""
@@ -273,6 +266,16 @@ ant_debug() {
 		export ANT_OPTS=$opts
 	fi
 	unset opts
+}
+
+jboss-debug() {
+	if [[ $JBOSS_DEBUG == "true" ]]; then
+		echo "jboss debug disabled"
+		export JBOSS_DEBUG="false"
+	else
+		echo "jboss debug enabled"
+		export JBOSS_DEBUG="true"
+	fi
 }
 
 revertiml() {
