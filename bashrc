@@ -278,11 +278,6 @@ jboss-debug() {
 	fi
 }
 
-revertiml() {
-	find . -name \*.iml -print0 | xargs -0 git checkout
-	git checkout .idea/ 
-}
-
 alias webs='python -m SimpleHTTPServer'
 
 # inhibit conversion of port numbers to port names

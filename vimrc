@@ -39,6 +39,11 @@ let NERDTreeIgnore=['\.pyc$','\~$','\~$']
 " Inspired by http://github.com/ciaranm/dotfiles-ciaranm/tree/master
 set statusline=%f\ %2*%m\ %1*%h%r%=[%{&encoding}\ %{&fileformat}\ %{strlen(&ft)?&ft:'none'}\ %{getfperm(@%)}]\ 0x%B\ %12.(%c:%l/%L%)
 
+" Uncomment the following to have Vim jump to the last position when
+" reopening a file
+if has("autocmd")
+  au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal g'\"" | endif
+endif
 
 "*********************** Completion ***********************
 let g:SuperTabDefaultCompletionType = 'context'
