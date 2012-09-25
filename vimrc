@@ -3,7 +3,7 @@ source $VIMRUNTIME/mswin.vim
 
 call pathogen#infect()
 
-filetype plugin on
+filetype plugin indent on
 set ofu=syntaxcomplete#Complete
 "*********************** Preferences **********************
 set nu
@@ -251,3 +251,5 @@ nnoremap <silent> <leader>sv :so $MYVIMRC<CR>
 
 " some strategy with this would be nice: http://vim.wikia.com/wiki/Set_working_directory_to_the_current_file
 "cd %:p:h " cd to the directory of the current file
+
+nnoremap <silent> <leader>tomap :%!~/scripts/tomap.py<CR>

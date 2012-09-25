@@ -280,5 +280,10 @@ jboss-debug() {
 
 alias webs='python -m SimpleHTTPServer'
 
+htime() {
+	HISTTIMEFORMAT="%F %T "
+	history
+}
+
 # inhibit conversion of port numbers to port names
 # alias lsof="lsof -P"
