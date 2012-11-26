@@ -28,9 +28,11 @@ set noswapfile
 set autoread
 set listchars=eol:\ ,tab:>-,trail:.,extends:>,nbsp:_ 
 set nowrap
-" not read to enable this
-" set clipboard=unnamed " won't clobber clipboard unnecessarily
-set clipboard=unnamedplus,autoselect " Use + register (X Window clipboard) as unnamed register
+if has('mac')
+	set clipboard=unnamed " won't clobber clipboard unnecessarily
+else
+	set clipboard=unnamedplus,autoselect " Use + register (X Window clipboard) as unnamed register
+endif
 " change cwd to root NERDTree directory
 let NERDTreeChDirMode=2
 " ignore pyc files

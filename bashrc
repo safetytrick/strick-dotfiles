@@ -7,9 +7,9 @@ then
 fi
 
 if [ "x$JAVA_HOME" != "x" ]; then
-	PATH=$PATH:$JAVA_HOME/bin
+	PATH="$PATH:$JAVA_HOME/bin"
 fi
-PATH=$PATH:~/scripts:~/bin
+PATH="$PATH:~/scripts:~/bin"
 export PATH
 
 export HISTSIZE=15000
@@ -117,11 +117,19 @@ alias ..='cd ..'
 alias ...='cd ../..'
 alias h=history_grep
 
+# http://www.reddit.com/r/linux/comments/13s57s/make_your_bashrc_aliases_work_with_sudo/
+alias sudo='sudo '
+
 if [ $os != "Darwin" ]; then
 	alias open=xdg-open
 else
 	# git-completion
-	source /usr/local/git/contrib/completion/git-completion.bash
+	if [ -f /usr/local/git/contrib/completion/git-completion.bash ]; then 
+		source /usr/local/git/contrib/completion/git-completion.bash
+	else
+		source /usr/share/git-core/git-completion.bash
+	fi
+
 	alias gvim=mvim
 fi
 
@@ -153,7 +161,7 @@ locatedir () {
 		locate $@ | grep "/${last}\$"
 	fi
 }
-
+ 
 locateext () {
 	for last; do true; done
 	locate $@ | grep "${last}\$"
