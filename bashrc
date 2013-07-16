@@ -28,6 +28,9 @@ export HISTCONTROL=ignoredups
 # ... and ignore same sucessive entries.
 export HISTCONTROL=ignoreboth
 
+# append to history instead of rewriting
+shopt -s histappend
+
 # check the window size after each command and, if necessary,
 # update the values of LINES and COLUMNS.
 shopt -s checkwinsize
@@ -107,6 +110,9 @@ alias l='ls -CF'
 # sources /etc/bash.bashrc).
 if [ -f /etc/bash_completion ]; then
     . /etc/bash_completion
+fi
+if [ -f /opt/local/etc/profile.d/bash_completion.sh ]; then
+    . /opt/local/etc/profile.d/bash_completion.sh 
 fi
 
 # python specific
@@ -295,3 +301,15 @@ htime() {
 
 # inhibit conversion of port numbers to port names
 # alias lsof="lsof -P"
+
+gitsearch() {
+	git rev-list --all | (
+		while read revision; do
+			git grep -F "$1" $revision
+		done
+	)
+}
+
+ppath() {
+	echo $PATH | tr ":" "\n" | sort
+}

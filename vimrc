@@ -1,6 +1,13 @@
 set nocompatible
 source $VIMRUNTIME/mswin.vim
 
+set rtp+=~/.vim/bundle/vundle
+
+call vundle#rc()
+
+Bundle 'gmarik/vundle'
+Bundle 'Valloric/YouCompleteMe' 
+
 call pathogen#infect()
 
 filetype plugin indent on
@@ -48,44 +55,8 @@ if has("autocmd")
   au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal g'\"" | endif
 endif
 
-"*********************** Completion ***********************
-let g:SuperTabDefaultCompletionType = 'context'
-augroup vimrc_completecmds
-	au!
-	autocmd FileType python set omnifunc=pythoncomplete#Complete
-	autocmd FileType javascript set omnifunc=javascriptcomplete#CompleteJS
-	autocmd FileType html set omnifunc=htmlcomplete#CompleteTags
-	autocmd FileType css set omnifunc=csscomplete#CompleteCSS
-	autocmd FileType xml set omnifunc=xmlcomplete#CompleteTags
-	autocmd FileType php set omnifunc=phpcomplete#CompletePHP
-
-	au BufRead,BufNewFile jquery.*.js set ft=javascript syntax=jquery
-	autocmd FileType python set list
-
-	"" Not sure if this is behavior that I want?
-	"" Automatically cd into the directory that the file is in
-	""autocmd BufEnter * execute "chdir ".escape(expand("%:p:h"), ' ')
-augroup END
-
-" http://blogs.gnome.org/lharris/2008/07/20/code-completion-with-vim-7/
-function! SuperCleverTab()
-    if strpart(getline('.'), 0, col('.') - 1) =~ '^\s*$'
-        return "\<Tab>"
-    else
-        if &omnifunc != ''
-            return "\<C-X>\<C-O>"
-        elseif &dictionary != ''
-            return "\<C-K>"
-        else
-            return "\<C-N>"
-        endif
-    endif
-endfunction
-
-inoremap <Tab> <C-R>=SuperCleverTab()<cr>
-
 "************************* Styles *************************
-colorscheme molokai
+colorscheme kellys
 if has('gui_running')
 	set lines=55 columns=125
 	if has('mac')
@@ -176,9 +147,6 @@ command! Q q
 let g:user_zen_expandabbr_key = '<c-e>'
 let g:use_zen_complete_tag = 1
 
-"Pydiction - disabled for omnicompletion
-"let g:pydiction_location = '~/.vim/pydiction/complete-dict' 
-
 "**********************************************************
 " Use Caps_Lock as Escape
 " --- add to ~/.Xmodmap: ---
@@ -256,3 +224,5 @@ nnoremap <silent> <leader>sv :so $MYVIMRC<CR>
 "cd %:p:h " cd to the directory of the current file
 
 nnoremap <silent> <leader>tomap :%!~/scripts/tomap.py<CR>
+
+nnoremap <leader>j :%!python -m json.tool<CR>
