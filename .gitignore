@@ -1,3 +1,4 @@
 \.*
 !\.git*
 vim/swap/*
+vim/bundle/YouCompleteMe

@@ -177,9 +177,9 @@ findclass() {
 	# lame, i hate working with bash arrays
 	if [ $# == 2 ]
 	then
-		find "$1" -name "*.jar" -exec sh -c 'jar -tf {}|grep -H --label {} '$2'' \;
+		find "$1" -type f -name "*.jar" -exec sh -c 'jar -tf {}|grep -H --label {} '$2'' \;
 	else
-		find "." -name "*.jar" -exec sh -c 'jar -tf {}|grep -H --label {} '$1'' \;
+		find "." -type f -name "*.jar" -exec sh -c 'jar -tf {}|grep -H --label {} '$1'' \;
 	fi
 	
 }

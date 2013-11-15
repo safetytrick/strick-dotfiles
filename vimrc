@@ -35,7 +35,8 @@ set autoread
 set listchars=eol:\ ,tab:>-,trail:.,extends:>,nbsp:_ 
 set nowrap
 "http://stackoverflow.com/questions/63104/smarter-vim-recovery"
-set directory=~/.vim/swap,.
+set directory=~/.vim/swap//
+
 if has('mac')
 	set clipboard=unnamed " won't clobber clipboard unnecessarily
 else
