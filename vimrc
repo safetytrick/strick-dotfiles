@@ -1,12 +1,12 @@
 set nocompatible
 source $VIMRUNTIME/mswin.vim
 
-set rtp+=~/.vim/bundle/vundle
+""set rtp+=~/.vim/bundle/vundle
 
-call vundle#rc()
+""call vundle#rc()
 
-Bundle 'gmarik/vundle'
-Bundle 'Valloric/YouCompleteMe' 
+""Bundle 'gmarik/vundle'
+""Bundle 'Valloric/YouCompleteMe' 
 
 call pathogen#infect()
 
@@ -27,8 +27,9 @@ set autoindent
 set smartindent
 set showmatch
 set ruler
-set tabstop=4
-set shiftwidth=4
+set expandtab
+set tabstop=2
+set shiftwidth=2
 set nobackup
 set nowritebackup
 set autoread
@@ -38,9 +39,9 @@ set nowrap
 set directory=~/.vim/swap//
 
 if has('mac')
-	set clipboard=unnamed " won't clobber clipboard unnecessarily
+  set clipboard=unnamed " won't clobber clipboard unnecessarily
 else
-	set clipboard=unnamedplus,autoselect " Use + register (X Window clipboard) as unnamed register
+  set clipboard=unnamedplus,autoselect " Use + register (X Window clipboard) as unnamed register
 endif
 " change cwd to root NERDTree directory
 let NERDTreeChDirMode=2
@@ -59,21 +60,21 @@ endif
 "************************* Styles *************************
 colorscheme kellys
 if has('gui_running')
-	set lines=55 columns=125
-	if has('mac')
-		set guifont=Menlo
-	else
-		set guifont=Monospace\ 9
-	endif
-	set guioptions-=T
+  set lines=55 columns=125
+  if has('mac')
+    set guifont=Menlo
+  else
+    set guifont=Monospace\ 9
+  endif
+  set guioptions-=T
 endif
 "************************* Python *************************
 let $DJANGO_SETTINGS_MODULE='settings'
 
 if has('python') "requires inline python
-	" Open NERDTree to the home directory for a python module
-	function! Ntpy(module)
-	
+  " Open NERDTree to the home directory for a python module
+  function! Ntpy(module)
+  
 python << ____EOF
 import vim, os.path
 module = __import__(vim.eval('a:module'))
@@ -82,11 +83,11 @@ vim.command("let l:pymod_path='NERDTree %s'" % path)
 
 ____EOF
 
-	exec l:pymod_path
-	endfunction
+  exec l:pymod_path
+  endfunction
 
-	" Python tweaks
-	" http://sontek.net/python-with-a-modular-ide-vim
+  " Python tweaks
+  " http://sontek.net/python-with-a-modular-ide-vim
 
 python << ____EOF
 
@@ -94,14 +95,14 @@ import os
 import sys
 import vim
 for p in sys.path:
-	if os.path.isdir(p):
-		vim.command(r"set path+=%s" % (p.replace(" ", r"\ ")))
+  if os.path.isdir(p):
+    vim.command(r"set path+=%s" % (p.replace(" ", r"\ ")))
 
 ____EOF
 
-	" run this first:
-	" $ ctags -R -f ~/.vim/tags/python.ctags /usr/lib/python2.6/
-	set tags+=$HOME/.vim/tags/python.ctags
+  " run this first:
+  " $ ctags -R -f ~/.vim/tags/python.ctags /usr/lib/python2.6/
+  set tags+=$HOME/.vim/tags/python.ctags
 endif "has python
 
 set tags=tags;/
@@ -158,12 +159,12 @@ let g:use_zen_complete_tag = 1
 " http://github.com/briancarper/dotfiles/blob/master/.vimrc
 " Use `:match none` to turn off the matches afterwards.
 function! CountLines()
-	let i = 0
-	let s:regex = input("Regex>")
-	execute('silent g/' . s:regex . '/let i = i + 1')
-	execute("match Search /^.*" . s:regex . ".*$/")
-	echo i . " lines match."
-	norm ''
+  let i = 0
+  let s:regex = input("Regex>")
+  execute('silent g/' . s:regex . '/let i = i + 1')
+  execute("match Search /^.*" . s:regex . ".*$/")
+  echo i . " lines match."
+  norm ''
 endfunction
 
 function! Pwd()
@@ -227,3 +228,5 @@ nnoremap <silent> <leader>sv :so $MYVIMRC<CR>
 nnoremap <silent> <leader>tomap :%!~/scripts/tomap.py<CR>
 
 nnoremap <leader>j :%!python -m json.tool<CR>
+
+au BufNewFile,BufRead *.gradle set filetype=groovy

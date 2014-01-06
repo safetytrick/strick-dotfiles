@@ -3,11 +3,11 @@
 
 if [ -f ~/.bashrc_local ] 
 then
-	. ~/.bashrc_local
+  . ~/.bashrc_local
 fi
 
 if [ "x$JAVA_HOME" != "x" ]; then
-	PATH="$PATH:$JAVA_HOME/bin"
+  PATH="$PATH:$JAVA_HOME/bin"
 fi
 PATH="$PATH:~/scripts:~/bin"
 export PATH
@@ -40,7 +40,7 @@ shopt -s checkwinsize
 
 # set a fancy prompt (non-color, unless we know we "want" color)
 case "$TERM" in
-    xterm-color) color_prompt=yes;;
+  xterm-color) color_prompt=yes;;
 esac
 
 # uncomment for a colored prompt, if the terminal has the capability; turned
@@ -49,33 +49,33 @@ esac
 force_color_prompt=yes
 
 if [ -n "$force_color_prompt" ]; then
-    if [ -x /usr/bin/tput ] && tput setaf 1 >&/dev/null; then
-	# We have color support; assume it's compliant with Ecma-48
-	# (ISO/IEC-6429). (Lack of such support is extremely rare, and such
-	# a case would tend to support setf rather than setaf.)
-	color_prompt=yes
-    else
-	color_prompt=
-    fi
+  if [ -x /usr/bin/tput ] && tput setaf 1 >&/dev/null; then
+    # We have color support; assume it's compliant with Ecma-48
+    # (ISO/IEC-6429). (Lack of such support is extremely rare, and such
+    # a case would tend to support setf rather than setaf.)
+    color_prompt=yes
+  else
+    color_prompt=
+  fi
 fi
 
 parse_git_branch() {
-	git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/ (\1)/'
+  git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/ (\1)/'
 }
 
 if [ "$color_prompt" = yes ]; then
-    PS1="\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\[\033[0;33m\]\$(parse_git_branch)\[\033[0m\]\$ "
+  PS1="\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\[\033[0;33m\]\$(parse_git_branch)\[\033[0m\]\$ "
 else
-    PS1="\u@\h:\w\ \$(parse_git_branch)$ "
+  PS1="\u@\h:\w\ \$(parse_git_branch)$ "
 fi
 unset color_prompt force_color_prompt
 
 # If this is an xterm set the title to user@host:dir
 case "$TERM" in
-xterm*|rxvt*)
+  xterm*|rxvt*)
     PROMPT_COMMAND='echo -ne "\033]0;${USER}@${HOSTNAME}: ${PWD/$HOME/~}\007"'
     ;;
-*)
+  *)
     ;;
 esac
 
@@ -85,19 +85,19 @@ esac
 # See /usr/share/doc/bash-doc/examples in the bash-doc package.
 
 if [ -f ~/.bash_aliases ]; then
-    . ~/.bash_aliases
+  . ~/.bash_aliases
 fi
 
 # enable color support of ls and also add handy aliases
 if [ "$TERM" != "dumb" ] && [ -x /usr/bin/dircolors ]; then
-    eval "`dircolors -b`"
-    alias ls='ls --color=auto'
-    alias dir='ls --color=auto --format=vertical'
-    alias vdir='ls --color=auto --format=long'
+  eval "`dircolors -b`"
+  alias ls='ls --color=auto'
+  alias dir='ls --color=auto --format=vertical'
+  alias vdir='ls --color=auto --format=long'
 
-    alias grep='grep --color=auto --exclude-dir=".svn"'
-    alias fgrep='fgrep --color=auto --exclude-dir=".svn"'
-    alias egrep='egrep --color=auto --exclude-dir=".svn"'
+  alias grep='grep --color=auto --exclude-dir=".svn"'
+  alias fgrep='fgrep --color=auto --exclude-dir=".svn"'
+  alias egrep='egrep --color=auto --exclude-dir=".svn"'
 fi
 
 # some more ls aliases
@@ -109,10 +109,10 @@ alias l='ls -CF'
 # this, if it's already enabled in /etc/bash.bashrc and /etc/profile
 # sources /etc/bash.bashrc).
 if [ -f /etc/bash_completion ]; then
-    . /etc/bash_completion
+  . /etc/bash_completion
 fi
 if [ -f /opt/local/etc/profile.d/bash_completion.sh ]; then
-    . /opt/local/etc/profile.d/bash_completion.sh 
+  . /opt/local/etc/profile.d/bash_completion.sh 
 fi
 
 # python specific
@@ -127,91 +127,93 @@ alias h=history_grep
 alias sudo='sudo '
 
 if [ $os != "Darwin" ]; then
-	alias open=xdg-open
+  alias open=xdg-open
 else
-	# git-completion
-	if [ -f /usr/local/git/contrib/completion/git-completion.bash ]; then 
-		source /usr/local/git/contrib/completion/git-completion.bash
-	else
-		source /usr/share/git-core/git-completion.bash
-	fi
+  # git-completion
+  if [ -f /usr/local/git/contrib/completion/git-completion.bash ]; then 
+    source /usr/local/git/contrib/completion/git-completion.bash
+  else
+    if [ -f /usr/share/git-core-git-completion.bash ]; then
+      source /usr/share/git-core/git-completion.bash
+    fi
+  fi
 
-	alias gvim=mvim
+  alias gvim=mvim
 fi
 
 history_grep() {
-	_grh="$@"
-	history | grep "$_grh"
+  _grh="$@"
+  history | grep "$_grh"
 }
 
 # cd's to the source of a python package
 cdp () {
   cd "$(python -c "import sys, imp, os  
-path = sys.path
-for i in '${1}'.split('.'): path = [imp.find_module(i,path)[1],]
-path = path[0] if os.path.isdir(path[0]) else os.path.dirname(path[0])
-print path")"
-}
+  path = sys.path
+  for i in '${1}'.split('.'): path = [imp.find_module(i,path)[1],]
+    path = path[0] if os.path.isdir(path[0]) else os.path.dirname(path[0])
+    print path")"
+  }
 
-# cds to the parent directory of first search result
-cdfind() {
-	cd $(dirname $(find "$@" 2>/dev/null | head -n1))
-}
+  # cds to the parent directory of first search result
+  cdfind() {
+    cd $(dirname $(find "$@" 2>/dev/null | head -n1))
+  }
 
-locatedir () {
-	for last; do true; done
-	if [[ $last == *\/* ]]
-	then
-		locate $@ | grep "${last}\$"
-	else
-		locate $@ | grep "/${last}\$"
-	fi
-}
- 
-locateext () {
-	for last; do true; done
-	locate $@ | grep "${last}\$"
-}
+  locatedir () {
+    for last; do true; done
+    if [[ $last == *\/* ]]
+    then
+      locate $@ | grep "${last}\$"
+    else
+      locate $@ | grep "/${last}\$"
+    fi
+  }
 
-findclass() {
-	# lame, i hate working with bash arrays
-	if [ $# == 2 ]
-	then
-		find "$1" -type f -name "*.jar" -exec sh -c 'jar -tf {}|grep -H --label {} '$2'' \;
-	else
-		find "." -type f -name "*.jar" -exec sh -c 'jar -tf {}|grep -H --label {} '$1'' \;
-	fi
-	
-}
+  locateext () {
+    for last; do true; done
+    locate $@ | grep "${last}\$"
+  }
 
-# it would be nice to write some utils to help with property lookup
-# find . -wholename \*conf/messages.properties -print0 | xargs -0 grep "kickstart"
+  findclass() {
+    # lame, i hate working with bash arrays
+    if [ $# == 2 ]
+    then
+      find "$1" -type f -name "*.jar" -exec sh -c 'jar -tf {}|grep -H --label {} '$2'' \;
+    else
+      find "." -type f -name "*.jar" -exec sh -c 'jar -tf {}|grep -H --label {} '$1'' \;
+    fi
 
-repeat () {
-	n=$1
-	shift
-	while [ $(( n -= 1 )) -ge 0 ]
-	do
-		"$@"
-	done
-}
+  }
 
-toback() {
-	mv "$1" "$1.bak"
-}
+  # it would be nice to write some utils to help with property lookup
+  # find . -wholename \*conf/messages.properties -print0 | xargs -0 grep "kickstart"
 
-unback() {
-	mv "$1" "`basename "$1" .bak`"
-}
+  repeat () {
+    n=$1
+    shift
+    while [ $(( n -= 1 )) -ge 0 ]
+    do
+      "$@"
+    done
+  }
 
-alias pushtab='firefox --display=:0.0 -new-tab '
+  toback() {
+    mv "$1" "$1.bak"
+  }
 
-flip-coin() {
-	if [[ $(($RANDOM % 2)) -eq 1 ]]; then
-		echo "Heads";
-	else
-		echo "Tails"
-	fi
+  unback() {
+    mv "$1" "`basename "$1" .bak`"
+  }
+
+  alias pushtab='firefox --display=:0.0 -new-tab '
+
+  flip-coin() {
+  if [[ $(($RANDOM % 2)) -eq 1 ]]; then
+    echo "Heads";
+  else
+    echo "Tails"
+  fi
 }
 
 # delete svn st ? files
@@ -231,14 +233,14 @@ cb() {
   # Check that xclip is installed.
   if ! type xclip > /dev/null 2>&1; then
     echo -e "$_wrn_col""You must have the 'xclip' program installed.\e[0m"
-  # Check user is not root (root doesn't have access to user xorg server)
+    # Check user is not root (root doesn't have access to user xorg server)
   elif [ "$USER" == "root" ]; then
     echo -e "$_wrn_col""Must be regular user (not root) to copy a file to the clipboard.\e[0m"
   else
     # If no tty, data should be available on stdin
     if [ "$( tty )" == 'not a tty' ]; then
       input="$(< /dev/stdin)"
-    # Else, fetch input from params
+      # Else, fetch input from params
     else
       input="$*"
     fi
@@ -273,43 +275,61 @@ cbp() {
 alias cb_ssh="cb ~/.ssh/id_rsa.pub"
 
 ant-debug() {
-	opts="-XX:MaxPermSize=256m -Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=8789"
-	if [[ $ANT_OPTS == $opts ]]; then
-		export ANT_OPTS=""
-	else
-		export ANT_OPTS=$opts
-	fi
-	unset opts
+opts="-XX:MaxPermSize=256m -Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=8789"
+if [[ $ANT_OPTS == $opts ]]; then
+  echo "debug disabled"
+  export ANT_OPTS=""
+else
+  echo "debug enabled"
+  export ANT_OPTS=$opts
+fi
+unset opts
+}
+
+gradle-debug() {
+opts="-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=5006"
+if [[ $GRADLE_OPTS == $opts ]]; then
+  echo "debug disabled"
+  export GRADLE_OPTS=""
+else
+  echo "debug enabled"
+  export GRADLE_OPTS=$opts
+fi
+unset opts
 }
 
 jboss-debug() {
-	if [[ $JBOSS_DEBUG == "true" ]]; then
-		echo "jboss debug disabled"
-		export JBOSS_DEBUG="false"
-	else
-		echo "jboss debug enabled"
-		export JBOSS_DEBUG="true"
-	fi
+if [[ $JBOSS_DEBUG == "true" ]]; then
+  echo "jboss debug disabled"
+  export JBOSS_DEBUG="false"
+else
+  echo "jboss debug enabled"
+  export JBOSS_DEBUG="true"
+fi
 }
 
 alias webs='python -m SimpleHTTPServer'
 
 htime() {
-	HISTTIMEFORMAT="%F %T "
-	history
+  HISTTIMEFORMAT="%F %T "
+  history
 }
 
 # inhibit conversion of port numbers to port names
 # alias lsof="lsof -P"
 
 gitsearch() {
-	git rev-list --all | (
-		while read revision; do
-			git grep -F "$1" $revision
-		done
-	)
+  git rev-list --all | (
+  while read revision; do
+    git grep -F "$1" $revision
+  done
+  )
 }
 
 ppath() {
-	echo $PATH | tr ":" "\n" | sort
+  echo $PATH | tr ":" "\n" | sort
 }
+
+#THIS MUST BE AT THE END OF THE FILE FOR GVM TO WORK!!!
+[[ -s "~/.gvm/bin/gvm-init.sh" ]] && source "~/.gvm/bin/gvm-init.sh"
+
