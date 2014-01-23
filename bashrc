@@ -229,13 +229,15 @@ alias svnre='~/scripts/pysvn.py'
 #   uses the contents of that file.
 # ------------------------------------------------
 cb() {
-  local _scs_col="\e[0;32m"; local _wrn_col='\e[1;31m'; local _trn_col='\e[0;33m'
+  if [ $os == "Darwin" ]; then
+    alias xclip=pbcopy
+  fi
   # Check that xclip is installed.
   if ! type xclip > /dev/null 2>&1; then
-    echo -e "$_wrn_col""You must have the 'xclip' program installed.\e[0m"
+    echo -e "You must have the 'xclip' program installed."
     # Check user is not root (root doesn't have access to user xorg server)
   elif [ "$USER" == "root" ]; then
-    echo -e "$_wrn_col""Must be regular user (not root) to copy a file to the clipboard.\e[0m"
+    echo -e "Must be regular user (not root) to copy a file to the clipboard."
   else
     # If no tty, data should be available on stdin
     if [ "$( tty )" == 'not a tty' ]; then
@@ -254,9 +256,9 @@ cb() {
       # Copy input to clipboard
       echo -n "$input" | xclip -selection c
       # Truncate text for status
-      if [ ${#input} -gt 80 ]; then input="$(echo $input | cut -c1-80)$_trn_col...\e[0m"; fi
+      if [ ${#input} -gt 80 ]; then input="$(echo $input | cut -c1-80)..."; fi
       # Print status.
-      echo -e "$_scs_col""Copied to clipboard:\e[0m $input"
+      echo -e "Copied to clipboard: $input"
     fi
   fi
 }
