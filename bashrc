@@ -149,10 +149,10 @@ history_grep() {
 # cd's to the source of a python package
 cdp () {
   cd "$(python -c "import sys, imp, os  
-  path = sys.path
-  for i in '${1}'.split('.'): path = [imp.find_module(i,path)[1],]
-    path = path[0] if os.path.isdir(path[0]) else os.path.dirname(path[0])
-    print path")"
+path = sys.path
+for i in '${1}'.split('.'): path = [imp.find_module(i,path)[1],]
+path = path[0] if os.path.isdir(path[0]) else os.path.dirname(path[0])
+print path")"
   }
 
   # cds to the parent directory of first search result
