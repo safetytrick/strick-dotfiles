@@ -10,3 +10,6 @@ Thumbs.db
 *.ipr
 *.iml
 *.iws
+*.ids
+.idea/
+.shelf

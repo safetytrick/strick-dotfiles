@@ -9,23 +9,23 @@ fi
 if [ "x$JAVA_HOME" != "x" ]; then
   PATH="$PATH:$JAVA_HOME/bin"
 fi
-PATH="$PATH:~/scripts:~/bin"
+PATH="$PATH:$HOME/scripts:$HOME/bin"
 export PATH
+
+# If not running interactively, don't do anything
+[ -z "$PS1" ] && return
+export FIGNORE=DS_Store
 
 export HISTSIZE=15000
 export HISTFILESIZE=15000 # Record last 10,000 commands
 
+export EDITOR=/usr/bin/vim
+export VISUAL=/usr/bin/vim
+
 # "Linux" for linux, "Darwin" for osx
 os=`uname -s`
 
-#export HISTIGNORE="&:ls:ls *:[bf]g:exit"
-
-# If not running interactively, don't do anything
-[ -z "$PS1" ] && return
-
-# don't put duplicate lines in the history. See bash(1) for more options
-export HISTCONTROL=ignoredups
-# ... and ignore same sucessive entries.
+# ignoredups and ignorespace 
 export HISTCONTROL=ignoreboth
 
 # append to history instead of rewriting
@@ -37,6 +37,7 @@ shopt -s checkwinsize
 
 # make less more friendly for non-text input files, see lesspipe(1)
 [ -x /usr/bin/lesspipe ] && eval "$(lesspipe)"
+[ -x /usr/local/bin/lesspipe.sh ] && eval "$(lesspipe.sh)"
 
 # set a fancy prompt (non-color, unless we know we "want" color)
 case "$TERM" in
@@ -79,15 +80,6 @@ case "$TERM" in
     ;;
 esac
 
-# Alias definitions.
-# You may want to put all your additions into a separate file like
-# ~/.bash_aliases, instead of adding them here directly.
-# See /usr/share/doc/bash-doc/examples in the bash-doc package.
-
-if [ -f ~/.bash_aliases ]; then
-  . ~/.bash_aliases
-fi
-
 # enable color support of ls and also add handy aliases
 if [ "$TERM" != "dumb" ] && [ -x /usr/bin/dircolors ]; then
   eval "`dircolors -b`"
@@ -105,26 +97,32 @@ alias ll='ls -l'
 alias la='ls -A'
 alias l='ls -CF'
 
-# enable programmable completion features (you don't need to enable
-# this, if it's already enabled in /etc/bash.bashrc and /etc/profile
-# sources /etc/bash.bashrc).
-if [ -f /etc/bash_completion ]; then
-  . /etc/bash_completion
-fi
-if [ -f /opt/local/etc/profile.d/bash_completion.sh ]; then
-  . /opt/local/etc/profile.d/bash_completion.sh 
-fi
-
-# python specific
-#. /home/michael/.django_bash_completion
-export PYTHONSTARTUP=~/.pythonrc
-
 alias ..='cd ..'
 alias ...='cd ../..'
 alias h=history_grep
 
 # http://www.reddit.com/r/linux/comments/13s57s/make_your_bashrc_aliases_work_with_sudo/
 alias sudo='sudo '
+
+alias webs='python -m SimpleHTTPServer'
+
+alias desktop.no="defaults write com.apple.finder CreateDesktop false; killall Finder;"
+alias desktop.yes="defaults write com.apple.finder CreateDesktop true; killall Finder;"
+
+# enable programmable completion features (you don't need to enable
+# this, if it's already enabled in /etc/bash.bashrc and /etc/profile
+# sources /etc/bash.bashrc).
+if [ -f /etc/bash_completion ]; then
+  . /etc/bash_completion
+fi
+
+if [ -f $(brew --prefix)/etc/bash_completion ]; then
+  . $(brew --prefix)/etc/bash_completion
+fi
+
+# python specific
+#. /home/michael/.django_bash_completion
+export PYTHONSTARTUP=~/.pythonrc
 
 if [ $os != "Darwin" ]; then
   alias open=xdg-open
@@ -155,71 +153,63 @@ path = path[0] if os.path.isdir(path[0]) else os.path.dirname(path[0])
 print path")"
   }
 
-  # cds to the parent directory of first search result
-  cdfind() {
-    cd $(dirname $(find "$@" 2>/dev/null | head -n1))
-  }
+# cds to the parent directory of first search result
+cdfind() {
+  cd $(dirname $(find "$@" 2>/dev/null | head -n1))
+}
 
-  locatedir () {
-    for last; do true; done
-    if [[ $last == *\/* ]]
-    then
-      locate $@ | grep "${last}\$"
-    else
-      locate $@ | grep "/${last}\$"
-    fi
-  }
-
-  locateext () {
-    for last; do true; done
+locatedir () {
+  for last; do true; done
+  if [[ $last == *\/* ]]
+  then
     locate $@ | grep "${last}\$"
-  }
+  else
+    locate $@ | grep "/${last}\$"
+  fi
+}
 
-  findclass() {
-    # lame, i hate working with bash arrays
-    if [ $# == 2 ]
-    then
-      find "$1" -type f -name "*.jar" -exec sh -c 'jar -tf {}|grep -H --label {} '$2'' \;
-    else
-      find "." -type f -name "*.jar" -exec sh -c 'jar -tf {}|grep -H --label {} '$1'' \;
-    fi
+locateext () {
+  for last; do true; done
+  locate $@ | grep "${last}\$"
+}
 
-  }
+findclass() {
+  # lame, i hate working with bash arrays
+  if [ $# == 2 ]
+  then
+    find "$1" -type f -name "*.jar" -exec sh -c 'jar -tf {}|grep -H --label {} '$2'' \;
+  else
+    find "." -type f -name "*.jar" -exec sh -c 'jar -tf {}|grep -H --label {} '$1'' \;
+  fi
 
-  # it would be nice to write some utils to help with property lookup
-  # find . -wholename \*conf/messages.properties -print0 | xargs -0 grep "kickstart"
+}
 
-  repeat () {
-    n=$1
-    shift
-    while [ $(( n -= 1 )) -ge 0 ]
-    do
-      "$@"
-    done
-  }
+repeat () {
+  n=$1
+  shift
+  while [ $(( n -= 1 )) -ge 0 ]
+  do
+    "$@"
+  done
+}
 
-  toback() {
-    mv "$1" "$1.bak"
-  }
+toback() {
+  mv "$1" "$1.bak"
+}
 
-  unback() {
-    mv "$1" "`basename "$1" .bak`"
-  }
+unback() {
+  mv "$1" "`basename "$1" .bak`"
+}
 
-  alias pushtab='firefox --display=:0.0 -new-tab '
+alias pushtab='firefox --display=:0.0 -new-tab '
 
-  flip-coin() {
+flip-coin() {
   if [[ $(($RANDOM % 2)) -eq 1 ]]; then
     echo "Heads";
   else
     echo "Tails"
   fi
 }
-
-# delete svn st ? files
-# svn st |grep -e ^\? -e ^I | awk '{print $2}'| xargs -r rm -r
-
-alias svnre='~/scripts/pysvn.py'
 
 # http://madebynathan.com/2011/10/04/a-nicer-way-to-use-xclip/
 #
@@ -266,6 +256,9 @@ cb() {
 # adjust cb() for copying paths
 cbp() {
   input="$*"
+  if [ $os == "Darwin" ]; then
+    alias xclip=pbcopy
+  fi
   echo -n "$input" | xclip -selection c
   # Truncate text for status
   if [ ${#input} -gt 80 ]; then input="$(echo $input | cut -c1-80)$_trn_col...\e[0m"; fi
@@ -277,61 +270,76 @@ cbp() {
 alias cb_ssh="cb ~/.ssh/id_rsa.pub"
 
 ant-debug() {
-opts="-XX:MaxPermSize=256m -Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=8789"
-if [[ $ANT_OPTS == $opts ]]; then
-  echo "debug disabled"
-  export ANT_OPTS=""
-else
-  echo "debug enabled"
-  export ANT_OPTS=$opts
-fi
-unset opts
+  opts="-XX:MaxPermSize=256m -Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=8789"
+  if [[ $ANT_OPTS == $opts ]]; then
+    echo "debug disabled"
+    export ANT_OPTS=""
+  else
+    echo "debug enabled"
+    export ANT_OPTS=$opts
+  fi
+  unset opts
 }
 
 gradle-debug() {
-opts="-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=5006"
-if [[ $GRADLE_OPTS == $opts ]]; then
-  echo "debug disabled"
-  export GRADLE_OPTS=""
-else
-  echo "debug enabled"
-  export GRADLE_OPTS=$opts
-fi
-unset opts
+  opts="-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=5006"
+  if [[ $GRADLE_OPTS == $opts ]]; then
+    echo "debug disabled"
+    export GRADLE_OPTS=""
+  else
+    echo "debug enabled"
+    export GRADLE_OPTS=$opts
+  fi
+  unset opts
 }
 
-jboss-debug() {
-if [[ $JBOSS_DEBUG == "true" ]]; then
-  echo "jboss debug disabled"
-  export JBOSS_DEBUG="false"
-else
-  echo "jboss debug enabled"
-  export JBOSS_DEBUG="true"
-fi
-}
-
-alias webs='python -m SimpleHTTPServer'
 
 htime() {
   HISTTIMEFORMAT="%F %T "
   history
 }
 
-# inhibit conversion of port numbers to port names
-# alias lsof="lsof -P"
-
-gitsearch() {
-  git rev-list --all | (
-  while read revision; do
-    git grep -F "$1" $revision
-  done
-  )
-}
-
 ppath() {
   echo $PATH | tr ":" "\n" | sort
 }
 
-#THIS MUST BE AT THE END OF THE FILE FOR GVM TO WORK!!!
-[[ -s "~/.gvm/bin/gvm-init.sh" ]] && source "~/.gvm/bin/gvm-init.sh"
+json_escape(){
+  arg="$1"
+  if [ -z "$arg" ]; then 
+    arg=$(</dev/stdin)
+  fi
+  echo -n "$arg" | python -c 'import json,sys; print json.dumps(sys.stdin.read())'
+}
+
+show-tests() {
+  if [[ ":" == "$1" ]]; then
+    shift
+    show-tests-immediate "$1"
+  elif [[ -d "$1" ]]; then
+    path=$1
+    shift
+    $(cd "$path" && show-tests "$@")
+  else
+    for path in $(find . -name build.gradle); do
+      $(cd `dirname ${path}` && show-tests-immediate "$@")
+    done
+  fi
+
+}
+
+show-tests-immediate() {
+  for directory in "target/test-reports/html" "build/reports/tests"; do
+    if [[ -e "$directory" ]]; then
+      find "$directory" -name "index.html" -print0 | while IFS= read -r -d $'\0' line; do
+      if [[ "$line" == *"$1"* ]] || [[ "$(basename `pwd`)" == *"$1"* ]]; then
+          open "$line"
+        fi
+      done
+    fi
+  done
+}
+
+#THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
+export SDKMAN_DIR="$HOME/.sdkman"
+[[ -s "$HOME/.sdkman/bin/sdkman-init.sh" ]] && source "$HOME/.sdkman/bin/sdkman-init.sh"
 
