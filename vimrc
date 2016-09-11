@@ -51,6 +51,13 @@ let NERDTreeIgnore=['\.pyc$','\~$','\~$']
 " Inspired by http://github.com/ciaranm/dotfiles-ciaranm/tree/master
 set statusline=%f\ %2*%m\ %1*%h%r%=[%{&encoding}\ %{&fileformat}\ %{strlen(&ft)?&ft:'none'}\ %{getfperm(@%)}]\ 0x%B\ %12.(%c:%l/%L%)
 
+" vim airline
+set laststatus=2
+
+" vim-taskwarrior
+
+let g:task_default_prompt  = ['project', 'description']
+
 " Uncomment the following to have Vim jump to the last position when
 " reopening a file
 if has("autocmd")

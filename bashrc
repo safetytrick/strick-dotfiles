@@ -64,17 +64,19 @@ parse_git_branch() {
   git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/ (\1)/'
 }
 
+LOCALNAME="${LOCALNAME:-\h}"
+
 if [ "$color_prompt" = yes ]; then
-  PS1="\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\[\033[0;33m\]\$(parse_git_branch)\[\033[0m\]\$ "
+  PS1="\[\033[01;32m\]\u@$LOCALNAME\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\[\033[0;33m\]\$(parse_git_branch)\[\033[0m\]\$ "
 else
-  PS1="\u@\h:\w\ \$(parse_git_branch)$ "
+  PS1="\u@$LOCALNAME:\w\ \$(parse_git_branch)$ "
 fi
 unset color_prompt force_color_prompt
 
 # If this is an xterm set the title to user@host:dir
 case "$TERM" in
   xterm*|rxvt*)
-    PROMPT_COMMAND='echo -ne "\033]0;${USER}@${HOSTNAME}: ${PWD/$HOME/~}\007"'
+    PROMPT_COMMAND='echo -ne "\033]0;${PWD/$HOME/~} : ${USER}@${HOSTNAME}\007"'
     ;;
   *)
     ;;
@@ -218,10 +220,11 @@ flip-coin() {
 # - If the input is a filename that exists, then it
 #   uses the contents of that file.
 # ------------------------------------------------
+if [ $os == "Darwin" ]; then
+  alias xclip=pbcopy
+fi
+
 cb() {
-  if [ $os == "Darwin" ]; then
-    alias xclip=pbcopy
-  fi
   # Check that xclip is installed.
   if ! type xclip > /dev/null 2>&1; then
     echo -e "You must have the 'xclip' program installed."
@@ -256,9 +259,7 @@ cb() {
 # adjust cb() for copying paths
 cbp() {
   input="$*"
-  if [ $os == "Darwin" ]; then
-    alias xclip=pbcopy
-  fi
+
   echo -n "$input" | xclip -selection c
   # Truncate text for status
   if [ ${#input} -gt 80 ]; then input="$(echo $input | cut -c1-80)$_trn_col...\e[0m"; fi
@@ -267,7 +268,16 @@ cbp() {
 }
 
 # Shortcut to copy SSH public key to clipboard.
-alias cb_ssh="cb ~/.ssh/id_rsa.pub"
+alias cb-ssh="cb ~/.ssh/id_rsa.pub"
+
+# Autocomplete ssh commands
+WL="$(perl -ne 'print "$1\n" if /^Host (.+)$/' ~/.ssh/config | grep -v "*" | tr "\n" " ")"
+complete -o plusdirs -f -W "$WL" ssh scp ssh-hostname
+
+build-ssh-conf() {
+  mv ~/.ssh/config ~/.ssh/config.old
+  cat ~/.ssh/sshconf/* > ~/.ssh/config  
+}
 
 ant-debug() {
   opts="-XX:MaxPermSize=256m -Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=8789"
@@ -331,13 +341,72 @@ show-tests-immediate() {
   for directory in "target/test-reports/html" "build/reports/tests"; do
     if [[ -e "$directory" ]]; then
       find "$directory" -name "index.html" -print0 | while IFS= read -r -d $'\0' line; do
-      if [[ "$line" == *"$1"* ]] || [[ "$(basename `pwd`)" == *"$1"* ]]; then
+        if [[ "$line" == *"$1"* ]] || [[ "$(basename `pwd`)" == *"$1"* ]]; then
           open "$line"
         fi
       done
     fi
   done
 }
+
+# requires pup https://github.com/ericchiang/pup
+
+if command -v pup >/dev/null 2>&1; then
+  failures() {
+    if [[ ":" == "$1" ]]; then
+      shift
+      failures-immediate "$1"
+    elif [[ -d "$1" ]]; then
+      path=$1
+      shift
+      $(cd "$path" && failures "$@")
+    else
+      for path in $(find . -name build.gradle); do
+        $(cd `dirname ${path}` && failures-immediate "$@")
+      done
+    fi
+  }
+
+  failures-immediate() {
+    for directory in "target/test-reports/html" "build/reports/tests"; do
+      if [[ -e "$directory" ]]; then
+        find "$directory" -name "index.html" -print0 | while IFS= read -r -d $'\0' line; do
+          if [[ "$line" == *"$1"* ]] || [[ "$(basename `pwd`)" == *"$1"* ]]; then
+            failurecount=$(cat "$line" | pup '#failures .counter text{}')
+            if [[ "$failurecount" -ne "0" ]]; then
+               open "$line"
+            fi
+          fi
+        done
+      fi
+    done
+  }
+else
+  failures() {
+    cat <<EOF
+requires pup for html parsing: https://github.com/ericchiang/pup
+
+brew install https://raw.githubusercontent.com/EricChiang/pup/master/pup.rb
+EOF
+    return 1
+  }
+fi
+
+ff() {
+  find . -name \*${1}\*
+}
+
+ssh-hostname() {
+  ssh -G "$@" | grep ^hostname
+}
+
+# https://hub.github.com/
+if command -v hub >/dev/null 2>&1; then
+  alias git=hub
+fi
+
+# man for builtins
+bashman () { man bash | less -p "^       $1 "; }
 
 #THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
 export SDKMAN_DIR="$HOME/.sdkman"
