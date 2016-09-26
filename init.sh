@@ -8,6 +8,8 @@ ln -s $@ $DIRECTORY/vim $HOME/.vim
 ln -s $@ $DIRECTORY/ctags $HOME/.ctags
 ln -s $@ $DIRECTORY/pythonrc $HOME/.pythonrc
 
+mkdir "$HOME/.vim/swap"
+
 # setup git global settings
 
 # no real need to alias this, but standard to always look for ~/.gitignore
