@@ -1,5 +1,3 @@
-# see /usr/share/doc/bash/examples/startup-files (in the package bash-doc)
-# for examples
 
 if [ -f ~/.bashrc_local ] 
 then
@@ -9,6 +7,7 @@ fi
 if [ "x$JAVA_HOME" != "x" ]; then
   PATH="$PATH:$JAVA_HOME/bin"
 fi
+
 PATH="$PATH:$HOME/scripts:$HOME/bin"
 export PATH
 
@@ -17,7 +16,7 @@ export PATH
 export FIGNORE=DS_Store
 
 export HISTSIZE=15000
-export HISTFILESIZE=15000 # Record last 10,000 commands
+export HISTFILESIZE=15000 
 
 export EDITOR=/usr/bin/vim
 export VISUAL=/usr/bin/vim
@@ -101,7 +100,6 @@ alias l='ls -CF'
 
 alias ..='cd ..'
 alias ...='cd ../..'
-alias h=history_grep
 
 # http://www.reddit.com/r/linux/comments/13s57s/make_your_bashrc_aliases_work_with_sudo/
 alias sudo='sudo '
@@ -110,6 +108,8 @@ alias webs='python -m SimpleHTTPServer'
 
 alias desktop.no="defaults write com.apple.finder CreateDesktop false; killall Finder;"
 alias desktop.yes="defaults write com.apple.finder CreateDesktop true; killall Finder;"
+
+alias pushtab='firefox --display=:0.0 -new-tab '
 
 # enable programmable completion features (you don't need to enable
 # this, if it's already enabled in /etc/bash.bashrc and /etc/profile
@@ -140,6 +140,8 @@ else
 
   alias gvim=mvim
 fi
+
+alias h=history_grep
 
 history_grep() {
   _grh="$@"
@@ -202,8 +204,6 @@ toback() {
 unback() {
   mv "$1" "`basename "$1" .bak`"
 }
-
-alias pushtab='firefox --display=:0.0 -new-tab '
 
 flip-coin() {
   if [[ $(($RANDOM % 2)) -eq 1 ]]; then
