@@ -118,8 +118,10 @@ if [ -f /etc/bash_completion ]; then
   . /etc/bash_completion
 fi
 
-if [ -f $(brew --prefix)/etc/bash_completion ]; then
-  . $(brew --prefix)/etc/bash_completion
+if command -v brew >/dev/null 2>&1; then
+  if [ -f $(brew --prefix)/etc/bash_completion ]; then
+    . $(brew --prefix)/etc/bash_completion
+  fi
 fi
 
 # python specific
@@ -270,9 +272,11 @@ cbp() {
 # Shortcut to copy SSH public key to clipboard.
 alias cb-ssh="cb ~/.ssh/id_rsa.pub"
 
-# Autocomplete ssh commands
-WL="$(perl -ne 'print "$1\n" if /^Host (.+)$/' ~/.ssh/config | grep -v "*" | tr "\n" " ")"
-complete -o plusdirs -f -W "$WL" ssh scp ssh-hostname
+if [ -f ~/.ssh/config ]; then
+  # Autocomplete ssh commands
+  WL="$(perl -ne 'print "$1\n" if /^Host (.+)$/' ~/.ssh/config | grep -v "*" | tr "\n" " ")"
+  complete -o plusdirs -f -W "$WL" ssh scp ssh-hostname
+fi
 
 build-ssh-conf() {
   mv ~/.ssh/config ~/.ssh/config.old
