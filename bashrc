@@ -8,7 +8,7 @@ if [ "x$JAVA_HOME" != "x" ]; then
   PATH="$PATH:$JAVA_HOME/bin"
 fi
 
-PATH="$PATH:$HOME/scripts:$HOME/bin"
+PATH="/usr/local/bin:$PATH:$HOME/scripts:$HOME/bin"
 export PATH
 
 # If not running interactively, don't do anything

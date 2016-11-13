@@ -65,8 +65,8 @@ if has("autocmd")
 endif
 
 "************************* Styles *************************
-colorscheme kellys
 if has('gui_running')
+  colorscheme kellys
   set lines=55 columns=125
   if has('mac')
     set guifont=Menlo
@@ -74,6 +74,8 @@ if has('gui_running')
     set guifont=Monospace\ 9
   endif
   set guioptions-=T
+else
+  colorscheme winter
 endif
 "************************* Python *************************
 let $DJANGO_SETTINGS_MODULE='settings'
