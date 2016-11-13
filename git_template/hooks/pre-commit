@@ -1,0 +1,31 @@
+#!/bin/sh
+#
+# prompts the user to create a branch before committing directly to master or develop
+
+if git rev-parse --verify HEAD >/dev/null 2>&1
+then
+	against=HEAD
+else
+	# Initial commit: diff against an empty tree object
+	against=4b825dc642cb6eb9a060e54bf8d69288fbee4904
+fi
+
+# allow committing directly to master or develop
+allowprotected=$(git config --bool hooks.allowprotected)
+branch=$(git rev-parse --symbolic --abbrev-ref "$against")
+
+# Redirect output to stderr.
+exec 1>&2
+
+if [[ "$allowprotected" != "true" && "$branch" =~ ^(master|develop)$ ]]
+then
+	cat <<\EOF
+Error: attempted to commit directly to $branch, did you mean to branch first?
+
+If you meant to commit directly to $branch set hooks.allowprotected=true:
+
+  git -c hooks.allowprotected=true commit ...
+EOF
+	exit 1
+fi
+
