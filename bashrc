@@ -412,7 +412,14 @@ fi
 # man for builtins
 bashman () { man bash | less -p "^       $1 "; }
 
+function pslisten {
+  echo `lsof -n -i4TCP:$1 | grep LISTEN`
+}
+
+[[ -s "$HOME/bash_completion.d/gradle-completion.bash" ]] && source "$HOME/bash_completion.d/gradle-completion.bash"
+
 #THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
 export SDKMAN_DIR="$HOME/.sdkman"
 [[ -s "$HOME/.sdkman/bin/sdkman-init.sh" ]] && source "$HOME/.sdkman/bin/sdkman-init.sh"
+
 

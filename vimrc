@@ -154,9 +154,9 @@ inoremap <Nul> <C-x><C-o>
 
 command! -nargs=* Ntp call Ntpy(<f-args>)
 command! Q q
-"Zen coding keys
-let g:user_zen_expandabbr_key = '<c-e>'
-let g:use_zen_complete_tag = 1
+
+let g:user_emmet_expandabbr_key = '<c-e>'
+let g:use_emmet_complete_tag = 1
 
 "**********************************************************
 " Use Caps_Lock as Escape
@@ -239,3 +239,25 @@ nnoremap <silent> <leader>tomap :%!~/scripts/tomap.py<CR>
 nnoremap <leader>j :%!python -m json.tool<CR>
 
 au BufNewFile,BufRead *.gradle set filetype=groovy
+
+" add fzf fuzzy search plugin
+set rtp+=/usr/local/opt/fzf
+
+" sql format plugin
+
+vmap <silent>sf        <Plug>SQLU_Formatter<CR>
+nmap <silent>scl       <Plug>SQLU_CreateColumnList<CR>
+nmap <silent>scd       <Plug>SQLU_GetColumnDef<CR>
+nmap <silent>scdt      <Plug>SQLU_GetColumnDataType<CR>
+nmap <silent>scp       <Plug>SQLU_CreateProcedure<CR>
+
+" xml format
+au FileType xml setlocal equalprg=xmllint\ --format\ --recover\ -\ 2>/dev/null
+
+
+" quote lines for sql
+
+map <F2> :%s/^\(\w\+\)$/'\1',/g<CR>G$x`'
+
+
+
