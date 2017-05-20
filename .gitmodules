@@ -13,3 +13,12 @@
 [submodule "vim/bundle/snipmate"]
 	path = vim/bundle/snipmate
 	url = git://github.com/msanders/snipmate.vim.git
+[submodule "vim/bundle/vimwiki"]
+	path = vim/bundle/vimwiki
+	url = https://github.com/vimwiki/vimwiki.git
+[submodule "vim/bundle/vim-airline"]
+	path = vim/bundle/vim-airline
+	url = git@github.com:vim-airline/vim-airline.git
+[submodule "vim/bundle/vim-taskwarrior"]
+	path = vim/bundle/vim-taskwarrior
+	url = git@github.com:blindFS/vim-taskwarrior.git
