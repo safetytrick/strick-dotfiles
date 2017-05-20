@@ -1,0 +1,42 @@
+vpn-add() {
+  if [ "x$1" = "x" ]; then
+    echo "usage: vpn-add hostname|ip"
+    return 1
+  fi
+
+  for var in "$@"
+  do
+    vpn-add-destination "$var"
+    echo "$var ✔"
+    for ip in $(dig +short "$var")
+    do
+    if echo "$ip" | grep -qE '[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}'; then
+      vpn-add-destination "$ip"
+    fi
+    done
+  done
+
+}
+
+vpn-add-destination() {
+  if [ "x$1" = "x" ]; then
+    echo "usage: vpn-add-destination destination"
+    return 1
+  fi
+
+  for var in "$@"
+  do
+    if ! is-vpn "$var"; then
+      echo "adding: $var"
+      if echo "$var" | grep -qE '[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}'; then
+        sudo /sbin/route add -net "$var" -interface ppp0 > /dev/null
+      else
+        sudo /sbin/route add -host "$var" -interface ppp0 > /dev/null
+      fi
+    fi
+  done
+}
+
+is-vpn() {
+  route get "$1" | grep "interface: ppp0" > /dev/null
+}
