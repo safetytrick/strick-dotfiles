@@ -400,8 +400,12 @@ ff() {
   find . -name \*${1}\*
 }
 
+ffo() {
+  open $(ff "$1")
+}
+
 ssh-hostname() {
-  ssh -G "$@" | grep ^hostname
+  ssh -G "$@" | grep ^hostname | sed 's/hostname //'
 }
 
 # https://hub.github.com/
