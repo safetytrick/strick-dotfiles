@@ -1,13 +1,6 @@
 set nocompatible
 source $VIMRUNTIME/mswin.vim
 
-""set rtp+=~/.vim/bundle/vundle
-
-""call vundle#rc()
-
-""Bundle 'gmarik/vundle'
-""Bundle 'Valloric/YouCompleteMe' 
-
 call pathogen#infect()
 
 filetype plugin indent on
@@ -259,5 +252,7 @@ au FileType xml setlocal equalprg=xmllint\ --format\ --recover\ -\ 2>/dev/null
 
 map <F2> :%s/^\(\w\+\)$/'\1',/g<CR>G$x`'
 
+" vimwiki configuration
+let g:vimwiki_list = [{'path': '~/vimwiki/', 'syntax': 'markdown', 'ext': '.md'}]
 
 
