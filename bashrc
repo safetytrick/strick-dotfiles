@@ -420,7 +420,24 @@ function pslisten {
   echo `lsof -n -i4TCP:$1 | grep LISTEN`
 }
 
+jps-cwd() {
+  jps -q | xargs -I % lsof -a -d cwd -p % | grep java | awk '{printf "%6s\t%s\n", $2, $NF}' | sort
+}
+
+extract-urls() {
+  if [ $# -eq 0 ]; then
+    echo "Usage: extract-urls file1 [file ...] "
+  fi
+  egrep -oh "https?://[^' \"]+" "$@"
+}
+
+extract-hostnames() {
+  awk -F[/:] "{print \"$@\" \$4}"
+
+}
+
 [[ -s "$HOME/bash_completion.d/gradle-completion.bash" ]] && source "$HOME/bash_completion.d/gradle-completion.bash"
+[[ -s "$HOME/bash_completion.d/ng-completion.bash" ]] && source "$HOME/bash_completion.d/ng-completion.bash"
 
 #THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
 export SDKMAN_DIR="$HOME/.sdkman"

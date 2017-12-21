@@ -255,4 +255,5 @@ map <F2> :%s/^\(\w\+\)$/'\1',/g<CR>G$x`'
 " vimwiki configuration
 let g:vimwiki_list = [{'path': '~/vimwiki/', 'syntax': 'markdown', 'ext': '.md'}]
 
+" number list update: let i=1 | g/^\d\+/s//\=''.i/ | let i=i+1
 
