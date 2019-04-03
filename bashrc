@@ -15,8 +15,17 @@ export PATH
 [ -z "$PS1" ] && return
 export FIGNORE=DS_Store
 
-export HISTSIZE=15000
-export HISTFILESIZE=15000 
+# Eternal bash history.
+# ---------------------
+# Undocumented feature which sets the size to "unlimited".
+# http://stackoverflow.com/questions/9457233/unlimited-bash-history
+export HISTSIZE=
+export HISTFILESIZE=
+
+# Change the file location because certain bash sessions truncate .bash_history file upon close.
+# http://superuser.com/questions/575479/bash-history-truncated-to-500-lines-on-each-login
+export HISTFILE=~/.bash_eternal_history
+
 
 export EDITOR=/usr/bin/vim
 export VISUAL=/usr/bin/vim
@@ -81,6 +90,10 @@ case "$TERM" in
     ;;
 esac
 
+# Force prompt to write history after every command.
+# http://superuser.com/questions/20900/bash-history-loss
+PROMPT_COMMAND="history -a; $PROMPT_COMMAND"
+
 # enable color support of ls and also add handy aliases
 if [ "$TERM" != "dumb" ] && [ -x /usr/bin/dircolors ]; then
   eval "`dircolors -b`"
@@ -104,12 +117,13 @@ alias ...='cd ../..'
 # http://www.reddit.com/r/linux/comments/13s57s/make_your_bashrc_aliases_work_with_sudo/
 alias sudo='sudo '
 
-alias webs='python -m SimpleHTTPServer'
+#alias webs='python -m SimpleHTTPServer'
+function webs() {
+  python -m http.server 7777
+}
 
 alias desktop.no="defaults write com.apple.finder CreateDesktop false; killall Finder;"
 alias desktop.yes="defaults write com.apple.finder CreateDesktop true; killall Finder;"
-
-alias pushtab='firefox --display=:0.0 -new-tab '
 
 # enable programmable completion features (you don't need to enable
 # this, if it's already enabled in /etc/bash.bashrc and /etc/profile
@@ -129,6 +143,7 @@ fi
 export PYTHONSTARTUP=~/.pythonrc
 
 if [ $os != "Darwin" ]; then
+  alias md5=md5sum
   alias open=xdg-open
 else
   # git-completion
@@ -143,10 +158,18 @@ else
   alias gvim=mvim
 fi
 
+
+alias dc=docker-compose
+
+complete -F _docker_compose dc
+
 alias h=history_grep
 
+function join_strs { local IFS="$1"; shift; echo "$*"; }
+
 history_grep() {
-  _grh="$@"
+  _grh=$(join_strs '*' $@)
+  echo "$_grh"
   history | grep "$_grh"
 }
 
@@ -443,4 +466,17 @@ extract-hostnames() {
 export SDKMAN_DIR="$HOME/.sdkman"
 [[ -s "$HOME/.sdkman/bin/sdkman-init.sh" ]] && source "$HOME/.sdkman/bin/sdkman-init.sh"
 
+if type kubectl >/dev/null 2>&1; then
+  source <(kubectl completion bash)
+fi
 
+if type hub >/dev/null 2>&1; then
+  alias git=hub
+fi
+
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+
+# added by Anaconda3 installer
+export PATH="/home/michael.nielson/opt/anaconda3/bin:$PATH"

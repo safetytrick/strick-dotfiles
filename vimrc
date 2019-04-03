@@ -34,7 +34,11 @@ set directory=~/.vim/swap//
 if has('mac')
   set clipboard=unnamed " won't clobber clipboard unnecessarily
 else
-  set clipboard=unnamedplus,autoselect " Use + register (X Window clipboard) as unnamed register
+  if has('autoselect')
+    set clipboard=unnamedplus,autoselect " Use + register (X Window clipboard) as unnamed register
+  else 
+    set clipboard=unnamedplus
+  endif
 endif
 " change cwd to root NERDTree directory
 let NERDTreeChDirMode=2
@@ -66,10 +70,31 @@ if has('gui_running')
   else
     set guifont=Monospace\ 9
   endif
-  set guioptions-=T
+  set guioptions-=T " remove toolbar
 else
   colorscheme winter
 endif
+
+function! DisplayColorSchemes()
+   let currDir = getcwd()
+   exec "cd $VIMRUNTIME/colors"
+   for myCol in split(glob("*"), '\n')
+      if myCol =~ '\.vim'
+         let mycol = substitute(myCol, '\.vim', '', '')
+         exec "colorscheme " . mycol
+         exec "redraw!"
+         echo "colorscheme = ". myCol
+         sleep 2
+      endif
+   endfor
+   exec "cd " . currDir
+endfunction
+
+"************************* NeoVIM *************************
+if has('nvim')
+  colorscheme slate
+endif
+
 "************************* Python *************************
 let $DJANGO_SETTINGS_MODULE='settings'
 

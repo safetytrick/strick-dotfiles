@@ -4,4 +4,6 @@ if has('gui_macvim')
   map <D-f> /
   " Ctrl-F page forward
   map <c-f> <c-f>
+elseif has('nvim')
+  Guifont! Monospace:h9
 endif

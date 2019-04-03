@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 #
 # prompts the user to create a branch before committing directly to master or develop
 
@@ -17,7 +17,7 @@ branch=$(git rev-parse --symbolic --abbrev-ref "$against")
 # Redirect output to stderr.
 exec 1>&2
 
-if [[ "$allowprotected" != "true" && "$branch" =~ ^(master|develop)$ ]]
+if [[ "$allowprotected" != "true" && "$branch" =~ '^(master|dev)$' ]]
 then
 	cat <<\EOF
 Error: attempted to commit directly to $branch, did you mean to branch first?

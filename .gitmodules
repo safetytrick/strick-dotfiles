@@ -22,3 +22,6 @@
 [submodule "vim/bundle/vim-taskwarrior"]
 	path = vim/bundle/vim-taskwarrior
 	url = git@github.com:blindFS/vim-taskwarrior.git
+[submodule "vim/bundle/tabular"]
+	path = vim/bundle/tabular
+	url = https://github.com/godlygeek/tabular.git
