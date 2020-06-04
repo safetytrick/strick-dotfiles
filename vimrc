@@ -275,10 +275,12 @@ au FileType xml setlocal equalprg=xmllint\ --format\ --recover\ -\ 2>/dev/null
 
 " quote lines for sql
 
-map <F2> :%s/^\([a-zA-Z0-9\-]\+\)$/'\1',/g<CR>G$x`'
+nnoremap <F2> :%s/^\([a-zA-Z0-9\-]\+\)$/'\1',/g<CR>G$x`'
 
 " tabularize tsv
-map <F3> :Tabularize /\t<CR>
+
+nnoremap <F5> {:Tabularize /\t<CR>
+inoremap <F5> <esc>{:Tabularize /\t<CR>
 
 " vimwiki configuration
 let g:vimwiki_list = [{'path': '~/vimwiki/', 'syntax': 'markdown', 'ext': '.md'}]
