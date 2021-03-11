@@ -26,6 +26,8 @@ export HISTFILESIZE=
 # http://superuser.com/questions/575479/bash-history-truncated-to-500-lines-on-each-login
 export HISTFILE=~/.bash_eternal_history
 
+export D_UID=$(id -u)
+export D_GID=$(id -g)
 
 export EDITOR=/usr/bin/vim
 export VISUAL=/usr/bin/vim
@@ -74,8 +76,9 @@ parse_git_branch() {
 
 LOCALNAME="${LOCALNAME:-\h}"
 
+HOST_COLOR="${HOST_COLOR:-01;32m}"
 if [ "$color_prompt" = yes ]; then
-  PS1="\[\033[01;32m\]\u@$LOCALNAME\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\[\033[0;33m\]\$(parse_git_branch)\[\033[0m\]\$ "
+  PS1="\[\033[$HOST_COLOR\]\u@$LOCALNAME\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\[\033[0;33m\]\$(parse_git_branch)\[\033[0m\]\$ "
 else
   PS1="\u@$LOCALNAME:\w\ \$(parse_git_branch)$ "
 fi
@@ -168,9 +171,8 @@ alias h=history_grep
 function join_strs { local IFS="$1"; shift; echo "$*"; }
 
 history_grep() {
-  _grh=$(join_strs '*' $@)
-  echo "$_grh"
-  history | grep "$_grh"
+  _grh=$(join_strs ' ' $@)
+  history | grep -e "$_grh"
 }
 
 # cd's to the source of a python package
@@ -408,6 +410,34 @@ if command -v pup >/dev/null 2>&1; then
       fi
     done
   }
+  cert-failures () 
+  { 
+      if [[ ":" == "$1" ]]; then
+          shift;
+          cert-failures-immediate "$1";
+      else
+          if [[ -d "$1" ]]; then
+              path=$1;
+              shift;
+              $(cd "$path" && failures "$@");
+          else
+              for path in $(find . -name build.gradle);
+              do
+                  $(cd `dirname ${path}` && cert-failures-immediate "$@");
+              done;
+          fi;
+      fi
+  }
+  cert-failures-immediate () 
+  { 
+      depcheck="build/reports/dependency-check-report.html";
+      if [[ -e "$depcheck" ]]; then
+          failurecount=$(cat "$depcheck" | pup -n -f "$depcheck" '.vulnerable');
+          if [[ "$failurecount" -ne "0" ]]; then
+              xdg-open "$depcheck";
+          fi;
+      fi
+  }
 else
   failures() {
     cat <<EOF
@@ -416,6 +446,9 @@ requires pup for html parsing: https://github.com/ericchiang/pup
 brew install https://raw.githubusercontent.com/EricChiang/pup/master/pup.rb
 EOF
     return 1
+  }
+  cert-failures() {
+    failures
   }
 fi
 
@@ -458,6 +491,10 @@ extract-hostnames() {
   awk -F[/:] "{print \"$@\" \$4}"
 
 }
+
+
+
+
 
 [[ -s "$HOME/bash_completion.d/gradle-completion.bash" ]] && source "$HOME/bash_completion.d/gradle-completion.bash"
 [[ -s "$HOME/bash_completion.d/ng-completion.bash" ]] && source "$HOME/bash_completion.d/ng-completion.bash"
