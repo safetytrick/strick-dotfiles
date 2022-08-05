@@ -1,15 +1,16 @@
 
-if [ -f ~/.bashrc_local ] 
-then
-  . ~/.bashrc_local
-fi
-
 if [ "x$JAVA_HOME" != "x" ]; then
   PATH="$PATH:$JAVA_HOME/bin"
 fi
 
 PATH="/usr/local/bin:$PATH:$HOME/scripts:$HOME/bin"
 export PATH
+
+if [ -f ~/.bashrc_local ] 
+then
+  . ~/.bashrc_local
+fi
+
 
 # If not running interactively, don't do anything
 [ -z "$PS1" ] && return
@@ -122,7 +123,7 @@ alias sudo='sudo '
 
 #alias webs='python -m SimpleHTTPServer'
 function webs() {
-  python -m http.server 7777
+  python3 -m http.server 7777
 }
 
 alias desktop.no="defaults write com.apple.finder CreateDesktop false; killall Finder;"
@@ -162,7 +163,7 @@ else
 fi
 
 
-alias dc=docker-compose
+alias dc="docker compose"
 
 complete -F _docker_compose dc
 
@@ -390,12 +391,12 @@ if command -v pup >/dev/null 2>&1; then
       shift
       $(cd "$path" && failures "$@")
     else
-      for path in $(find . -name build.gradle); do
+      for path in $(find . -name 'build.gradle*'); do
         $(cd `dirname ${path}` && failures-immediate "$@")
       done
     fi
   }
-
+  
   failures-immediate() {
     for directory in "target/test-reports/html" "build/reports/tests"; do
       if [[ -e "$directory" ]]; then
@@ -421,7 +422,7 @@ if command -v pup >/dev/null 2>&1; then
               shift;
               $(cd "$path" && failures "$@");
           else
-              for path in $(find . -name build.gradle);
+              for path in $(find . -name 'build.gradle*');
               do
                   $(cd `dirname ${path}` && cert-failures-immediate "$@");
               done;
@@ -515,5 +516,3 @@ export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 
-# added by Anaconda3 installer
-export PATH="/home/michael.nielson/opt/anaconda3/bin:$PATH"
